@@ -3009,7 +3009,6 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
     })();
     </script>
 
-
 <style>
 /* ══ Вкладка «Сборки» (слева, не в настройках) ══ */
 #bldTab { position:fixed; left:0; top:50%; transform:translateY(-50%); z-index:50; width:26px; padding:16px 0; border:1px solid rgba(255,255,255,.10); border-left:0; border-radius:0 12px 12px 0; background:rgba(22,22,28,.92); color:#e8e8f0; cursor:pointer; font:600 11px/1 inherit; letter-spacing:.18em; writing-mode:vertical-rl; transform-origin:center; text-align:center; transition:background .2s, width .2s; -webkit-app-region:no-drag; }
@@ -3023,10 +3022,19 @@ body.bld-open #bldPanel { transform:none; }
 .bld-head p { margin:4px 0 0; font-size:12px; color:#8e8e93; }
 .bld-x { border:0; background:transparent; color:#8e8e93; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:8px; }
 .bld-x:hover { background:rgba(255,255,255,.08); color:#fff; }
-.bld-body { flex:1; display:flex; align-items:center; justify-content:center; padding:0 28px 60px; }
-.bld-empty { text-align:center; max-width:280px; }
-.bld-empty .moon { font-size:44px; opacity:.85; margin-bottom:14px; }
-.bld-empty div:last-child { font-size:14px; line-height:1.5; color:#c7c7cc; }
+
+/* список карточек */
+.bld-body { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:4px 22px 28px; display:flex; flex-direction:column; gap:16px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
+
+/* карточка сборки */
+.bld-card { display:flex; flex-direction:column; gap:10px; padding:12px; border-radius:18px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); transition:box-shadow .2s, transform .3s cubic-bezier(.32,.72,0,1); }
+.bld-card:hover { box-shadow:0 0 0 1px rgba(255,255,255,.16); transform:translateY(-2px); }
+.bld-cover { width:100%; aspect-ratio:1/1; border-radius:12px; overflow:hidden; background:#000; }
+.bld-cover svg { width:100%; height:100%; display:block; }
+.bld-rate { align-self:flex-end; display:flex; align-items:center; gap:7px; padding:9px 16px; border-radius:12px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:14px; font-weight:600; color:#ffc928; }
+.bld-rate svg { width:18px; height:18px; fill:#ffc928; }
+.bld-name { margin:2px 4px 0; font-size:18px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
+.bld-price { padding:14px; border-radius:12px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:14px; font-weight:700; color:#8e8e98; }
 </style>
 <button id="bldTab" type="button" title="Сборки">СБОРКИ</button>
 <div id="bldBack"></div>
@@ -3036,10 +3044,54 @@ body.bld-open #bldPanel { transform:none; }
         <button class="bld-x" id="bldClose" type="button" aria-label="Закрыть">&#10005;</button>
     </div>
     <div class="bld-body">
-        <div class="bld-empty">
-            <div class="moon">&#127761;</div>
-            <div>Здесь пока пусто, темно и грустно, но скоро будет всё!</div>
-        </div>
+
+        <!-- ═══ КАРТОЧКА: Tokyo ═══ -->
+        <article class="bld-card">
+            <div class="bld-cover">
+                <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tokyo">
+  <defs>
+    <radialGradient id="tkG2" cx=".5" cy=".38" r=".7">
+      <stop offset="0" stop-color="#2a2a2e"/>
+      <stop offset=".6" stop-color="#0b0b0d"/>
+      <stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <linearGradient id="tkSun2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#bdbdc4"/>
+    </linearGradient>
+    <clipPath id="tkClip2"><circle cx="200" cy="170" r="92"/></clipPath>
+  </defs>
+  <rect width="400" height="400" fill="url(#tkG2)"/>
+  <!-- солнце с горизонтальными прорезями -->
+  <g clip-path="url(#tkClip2)">
+    <rect x="100" y="70" width="200" height="200" fill="url(#tkSun2)"/>
+    <rect x="100" y="190" width="200" height="5" fill="#000"/>
+    <rect x="100" y="212" width="200" height="8" fill="#000"/>
+    <rect x="100" y="238" width="200" height="12" fill="#000"/>
+  </g>
+  <!-- тории -->
+  <g fill="#000" stroke="#fff" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M92 218 Q200 236 308 218 L316 202 Q200 224 84 202 Z" />
+    <rect x="108" y="232" width="184" height="9" />
+    <rect x="124" y="232" width="13" height="108" />
+    <rect x="263" y="232" width="13" height="108" />
+    <rect x="192" y="226" width="16" height="22" />
+  </g>
+  <!-- земля -->
+  <rect x="60" y="340" width="280" height="1.5" fill="#fff" opacity=".5"/>
+  <rect x="120" y="352" width="160" height="1.5" fill="#fff" opacity=".25"/>
+  <rect x="20" y="20" width="360" height="360" rx="4" fill="none" stroke="#fff" stroke-opacity=".12"/>
+</svg>
+            </div>
+            <div class="bld-rate">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.1 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+                5.0
+            </div>
+            <h3 class="bld-name">Tokyo</h3>
+            <div class="bld-price">Скоро</div>
+        </article>
+        <!-- ═══ КОНЕЦ КАРТОЧКИ ═══ -->
+
     </div>
 </aside>
 <script>
