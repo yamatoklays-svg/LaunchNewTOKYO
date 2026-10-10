@@ -3009,5 +3009,48 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
     })();
     </script>
 
+
+<style>
+/* ══ Вкладка «Сборки» (слева, не в настройках) ══ */
+#bldTab { position:fixed; left:0; top:50%; transform:translateY(-50%); z-index:50; width:26px; padding:16px 0; border:1px solid rgba(255,255,255,.10); border-left:0; border-radius:0 12px 12px 0; background:rgba(22,22,28,.92); color:#e8e8f0; cursor:pointer; font:600 11px/1 inherit; letter-spacing:.18em; writing-mode:vertical-rl; transform-origin:center; text-align:center; transition:background .2s, width .2s; -webkit-app-region:no-drag; }
+#bldTab:hover { background:rgba(40,40,50,.98); width:30px; }
+#bldBack { position:fixed; left:0; right:0; bottom:0; top:40px; z-index:90; background:rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:opacity .25s; }
+#bldPanel { position:fixed; left:0; bottom:0; top:40px; z-index:91; width:min(420px,100vw); background:rgba(14,14,18,.985); border-right:1px solid rgba(255,255,255,.08); box-shadow:12px 0 40px rgba(0,0,0,.5); transform:translateX(-102%); transition:transform .3s cubic-bezier(.2,.8,.2,1); display:flex; flex-direction:column; color:#e8e8f0; }
+body.bld-open #bldBack { opacity:1; pointer-events:auto; }
+body.bld-open #bldPanel { transform:none; }
+.bld-head { display:flex; align-items:flex-start; justify-content:space-between; padding:22px 22px 14px; }
+.bld-head h2 { margin:0; font-size:20px; letter-spacing:.04em; }
+.bld-head p { margin:4px 0 0; font-size:12px; color:#8e8e93; }
+.bld-x { border:0; background:transparent; color:#8e8e93; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:8px; }
+.bld-x:hover { background:rgba(255,255,255,.08); color:#fff; }
+.bld-body { flex:1; display:flex; align-items:center; justify-content:center; padding:0 28px 60px; }
+.bld-empty { text-align:center; max-width:280px; }
+.bld-empty .moon { font-size:44px; opacity:.85; margin-bottom:14px; }
+.bld-empty div:last-child { font-size:14px; line-height:1.5; color:#c7c7cc; }
+</style>
+<button id="bldTab" type="button" title="Сборки">СБОРКИ</button>
+<div id="bldBack"></div>
+<aside id="bldPanel" aria-label="Сборки">
+    <div class="bld-head">
+        <div><h2>Сборки</h2><p>Последние платные сборки</p></div>
+        <button class="bld-x" id="bldClose" type="button" aria-label="Закрыть">&#10005;</button>
+    </div>
+    <div class="bld-body">
+        <div class="bld-empty">
+            <div class="moon">&#127761;</div>
+            <div>Здесь пока пусто, темно и грустно, но скоро будет всё!</div>
+        </div>
+    </div>
+</aside>
+<script>
+(function(){
+    var b = document.body;
+    function open(v){ b.classList.toggle('bld-open', v); }
+    document.getElementById('bldTab').addEventListener('click', function(){ open(!b.classList.contains('bld-open')); });
+    document.getElementById('bldClose').addEventListener('click', function(){ open(false); });
+    document.getElementById('bldBack').addEventListener('click', function(){ open(false); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') open(false); });
+})();
+</script>
 </body>
 </html>
