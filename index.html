@@ -1685,6 +1685,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             <div class="titlebar-by">by <span class="titlebar-author">Yamato</span></div>
         </div>
         <div class="titlebar-buttons">
+            <button class="bld-btn" id="bldBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Сборки"><span>Сборки</span></button>
             <button class="gear-btn" id="gearBtn" title="Настройки" aria-label="Настройки" type="button">⚙</button>
             <button id="minBtn" title="Свернуть" aria-label="Свернуть" type="button">─</button>
             <button id="closeBtn" class="close" title="Закрыть" aria-label="Закрыть" type="button">✕</button>
@@ -3010,41 +3011,37 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
     </script>
 
 <style>
-/* ══ Вкладка «Сборки» (слева, не в настройках) ══ */
-#bldTab { position:fixed; left:0; top:50%; transform:translateY(-50%); z-index:50; width:26px; padding:16px 0; border:1px solid rgba(255,255,255,.10); border-left:0; border-radius:0 12px 12px 0; background:rgba(22,22,28,.92); color:#e8e8f0; cursor:pointer; font:600 11px/1 inherit; letter-spacing:.18em; writing-mode:vertical-rl; transform-origin:center; text-align:center; transition:background .2s, width .2s; -webkit-app-region:no-drag; }
-#bldTab:hover { background:rgba(40,40,50,.98); width:30px; }
-#bldBack { position:fixed; left:0; right:0; bottom:0; top:40px; z-index:90; background:rgba(0,0,0,.55); opacity:0; pointer-events:none; transition:opacity .25s; }
-#bldPanel { position:fixed; left:0; bottom:0; top:40px; z-index:91; width:min(420px,100vw); background:rgba(14,14,18,.985); border-right:1px solid rgba(255,255,255,.08); box-shadow:12px 0 40px rgba(0,0,0,.5); transform:translateX(-102%); transition:transform .3s cubic-bezier(.2,.8,.2,1); display:flex; flex-direction:column; color:#e8e8f0; }
+/* ══ Кнопка «Сборки» в шапке + всплывающая карточка ══ */
+body.theme-macos.mj .titlebar-buttons button.bld-btn { position:relative; width:auto; height:26px; margin:0 10px 0 0; padding:0 20px; border-radius:7px; background:transparent; box-shadow:none; filter:none; cursor:pointer; -webkit-app-region:no-drag; transition:background-color .25s, transform .25s cubic-bezier(.32,.72,0,1); }
+body.theme-macos.mj .titlebar-buttons button.bld-btn:hover, body.bld-open .titlebar-buttons button.bld-btn { background:rgba(255,255,255,.05); transform:none; filter:none; }
+body.theme-macos.mj .titlebar-buttons button.bld-btn:active { transform:scale(.98); }
+/* сам шрифт широкий: жирный Unbounded, буквы растянуты по горизонтали, расстояние между ними обычное */
+.bld-btn span { display:block; transform:scaleX(1.32); transform-origin:center; font-family:'Unbounded','Inter','Segoe UI',sans-serif; font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; line-height:1; color:transparent; background:linear-gradient(180deg,#ffffff 20%,#c9cde0 100%); -webkit-background-clip:text; background-clip:text; }
+/* только тонкая рамка: белая с радужным отливом, внутри пусто */
+.bld-btn::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
+    background:linear-gradient(100deg,#ffffff 0%,#ffd0ee 16%,#c8e2ff 34%,#d2ffe4 52%,#ffffff 68%,#ffe6c2 84%,#ffffff 100%); background-size:300% 100%; animation:bldRb 7s linear infinite;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+@keyframes bldRb { to { background-position:-300% 0; } }
+
+#bldBack { position:fixed; left:0; right:0; bottom:0; top:40px; z-index:90; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:opacity .25s; }
+#bldPop { position:fixed; top:46px; right:14px; z-index:91; width:288px; max-height:calc(100vh - 62px); display:flex; flex-direction:column; border-radius:20px; background:rgba(14,14,18,.98); box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 30px 70px -12px rgba(0,0,0,.9); color:#e8e8f0;
+    opacity:0; pointer-events:none; transform:translateY(-8px) scale(.96); transform-origin:100% 0; transition:opacity .22s ease, transform .35s cubic-bezier(.32,.72,0,1); }
 body.bld-open #bldBack { opacity:1; pointer-events:auto; }
-body.bld-open #bldPanel { transform:none; }
-.bld-head { display:flex; align-items:flex-start; justify-content:space-between; padding:22px 22px 14px; }
-.bld-head h2 { margin:0; font-size:20px; letter-spacing:.04em; }
-.bld-head p { margin:4px 0 0; font-size:12px; color:#8e8e93; }
-.bld-x { border:0; background:transparent; color:#8e8e93; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:8px; }
-.bld-x:hover { background:rgba(255,255,255,.08); color:#fff; }
-
-/* список карточек */
-.bld-body { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:4px 22px 28px; display:flex; flex-direction:column; gap:16px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
-
-/* карточка сборки */
-.bld-card { display:flex; flex-direction:column; gap:10px; padding:12px; border-radius:18px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); transition:box-shadow .2s, transform .3s cubic-bezier(.32,.72,0,1); }
-.bld-card:hover { box-shadow:0 0 0 1px rgba(255,255,255,.16); transform:translateY(-2px); }
-.bld-cover { width:100%; aspect-ratio:1/1; border-radius:12px; overflow:hidden; background:#000; }
+body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
+.bld-sub { padding:16px 18px 4px; font-size:12px; color:#8e8e98; }
+.bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 14px 14px; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
+.bld-card { display:flex; flex-direction:column; gap:9px; padding:10px; border-radius:16px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
+.bld-cover { width:100%; aspect-ratio:1/1; border-radius:11px; overflow:hidden; background:#000; }
 .bld-cover svg { width:100%; height:100%; display:block; }
-.bld-rate { align-self:flex-end; display:flex; align-items:center; gap:7px; padding:9px 16px; border-radius:12px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:14px; font-weight:600; color:#ffc928; }
-.bld-rate svg { width:18px; height:18px; fill:#ffc928; }
-.bld-name { margin:2px 4px 0; font-size:18px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
-.bld-price { padding:14px; border-radius:12px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:14px; font-weight:700; color:#8e8e98; }
+.bld-rate { align-self:flex-end; display:flex; align-items:center; gap:6px; padding:7px 13px; border-radius:10px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:600; color:#ffc928; }
+.bld-rate svg { width:16px; height:16px; fill:#ffc928; }
+.bld-name { margin:0 3px; font-size:17px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
+.bld-price { padding:12px; border-radius:11px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:700; color:#8e8e98; }
 </style>
-<button id="bldTab" type="button" title="Сборки">СБОРКИ</button>
 <div id="bldBack"></div>
-<aside id="bldPanel" aria-label="Сборки">
-    <div class="bld-head">
-        <div><h2>Сборки</h2><p>Последние платные сборки</p></div>
-        <button class="bld-x" id="bldClose" type="button" aria-label="Закрыть">&#10005;</button>
-    </div>
+<div id="bldPop" role="dialog" aria-label="Сборки">
+    <div class="bld-sub">Последние платные сборки</div>
     <div class="bld-body">
-
         <!-- ═══ КАРТОЧКА: Tokyo ═══ -->
         <article class="bld-card">
             <div class="bld-cover">
@@ -3091,15 +3088,13 @@ body.bld-open #bldPanel { transform:none; }
             <div class="bld-price">Скоро</div>
         </article>
         <!-- ═══ КОНЕЦ КАРТОЧКИ ═══ -->
-
     </div>
-</aside>
+</div>
 <script>
 (function(){
-    var b = document.body;
-    function open(v){ b.classList.toggle('bld-open', v); }
-    document.getElementById('bldTab').addEventListener('click', function(){ open(!b.classList.contains('bld-open')); });
-    document.getElementById('bldClose').addEventListener('click', function(){ open(false); });
+    var b = document.body, btn = document.getElementById('bldBtn');
+    function open(v){ b.classList.toggle('bld-open', v); btn.setAttribute('aria-expanded', v ? 'true' : 'false'); }
+    btn.addEventListener('click', function(e){ e.stopPropagation(); open(!b.classList.contains('bld-open')); });
     document.getElementById('bldBack').addEventListener('click', function(){ open(false); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') open(false); });
 })();
