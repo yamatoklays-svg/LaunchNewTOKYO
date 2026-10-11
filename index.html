@@ -2103,7 +2103,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             d.style.setProperty('--accent',srv.color); d.style.setProperty('--accent-dim',srv.dimColor);
             var nameSrc=isSoon?(comingSoonRevealed?'Скоро!':srv.name):srv.name;
             var nameHtml=nameSrc.split('').map(function(ch,i){return '<span class="letter" style="animation-delay:'+(i*0.045)+'s">'+(ch===' '?'&nbsp;':ch)+'</span>';}).join('');
-            d.innerHTML='<div class="server-glow"></div><div class="srv-ico'+(isSoon?' srv-ico-soon':'')+'" data-v="'+(_si%5)+'"><i></i><i></i><b class="srv-num">'+srv.icon+'</b></div><div class="srv-txt"><div class="server-name'+(isSoon?' server-name-soon':'')+'">'+nameHtml+'</div><div class="server-ip">'+(isSoon?'':srv.ip)+'</div></div>';
+            d.innerHTML='<div class="server-glow"></div><div class="srv-ico'+(isSoon?' srv-ico-soon':'')+'" data-v="'+(_si%5)+'"><span class="srv-brand">AMAZING</span><span class="srv-word">'+(isSoon?(comingSoonRevealed?'Скоро!':'???'):srv.name)+'</span></div><div class="srv-txt"><div class="server-name'+(isSoon?' server-name-soon':'')+'">'+nameHtml+'</div><div class="server-ip">'+(isSoon?'':srv.ip)+'</div></div>';
             if(isSoon){
                 // Тизер 13-го сервера: по клику (не по hover) снимаем блюр и показываем "Скоро!".
                 // Реальным выбираемым сервером он не становится - у него нет ip/port для подключения.
@@ -3115,5 +3115,15 @@ body.theme-macos.mj .server[data-srv="black"] .srv-ico { color:#fff; }
     },{passive:false});
 })();
 </script>
+<style>
+/* Компактный логотип AMAZING в прежнем размере 40×40 */
+body.theme-macos.mj .srv-ico { width:40px; height:40px; flex:0 0 40px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:3px 2px; border-radius:12px; background:#050505 !important; color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 5px 12px rgba(0,0,0,.35); }
+body.theme-macos.mj .srv-ico::after { background:none; box-shadow:inset 0 1px 0 rgba(255,255,255,.14); }
+body.theme-macos.mj .srv-brand { position:relative; z-index:2; color:#f7f7f7; font-family:'Unbounded','Inter',sans-serif; font-size:5px; font-weight:800; letter-spacing:-.25px; line-height:1; white-space:nowrap; }
+body.theme-macos.mj .srv-word { position:relative; z-index:2; max-width:100%; overflow:hidden; color:var(--accent); font-family:'Segoe Script','Brush Script MT',cursive; font-size:10px; font-style:italic; font-weight:700; letter-spacing:-.5px; line-height:1; text-shadow:0 0 7px color-mix(in srgb,var(--accent) 45%,transparent); white-space:nowrap; }
+body.theme-macos.mj .server.selected .srv-ico { box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 1px var(--accent),0 6px 12px rgba(0,0,0,.55); }
+body.theme-macos.mj .srv-ico-soon .srv-brand { color:#fff; }
+body.theme-macos.mj .srv-ico-soon .srv-word { color:#fff; }
+</style>
 </body>
 </html>
