@@ -1450,8 +1450,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
                 <div class="sr-nav" id="srNav">
                     <i class="sr-ind" id="srInd"></i>
                     <button class="sr-it" type="button" data-go="game"><span class="sr-ic"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M8 10.5v4M6 12.5h4"/><circle class="f" cx="15.5" cy="11.5" r="1"/><circle class="f" cx="18" cy="13.8" r="1"/></svg></span><span class="tx sr-tx"><b>Игра</b><i>ゲーム</i></span></button>
-                    <button class="sr-it" type="button" data-go="visuals"><span class="sr-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3.5"/><path d="M3 9.5h18M7 6.8h.01M10 6.8h.01"/></svg></span><span class="tx sr-tx"><b>Интерфейс</b><i>画面</i></span></button>
-                    <button class="sr-it" type="button" data-go="effects"><span class="sr-ic"><svg viewBox="0 0 24 24"><path class="f" d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path class="f" d="M19 15.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span><span class="tx sr-tx"><b>Эффекты</b><i>効果</i></span><span class="sr-cnt" id="srFx"></span></button>
+                    <button class="sr-it" type="button" data-go="visuals"><span class="sr-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3.5"/><path d="M3 9.5h18M7 6.8h.01M10 6.8h.01"/></svg></span><span class="tx sr-tx"><b>Интерфейс</b><i>画面 + 効果</i></span><span class="sr-cnt" id="srFx"></span></button>
                     <button class="sr-it" type="button" data-go="plugins"><span class="sr-ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></span><span class="tx sr-tx"><b>Плагины</b><i>拡張</i></span><span class="sr-cnt" id="srPl"></span></button>
                 </div>
                 <div class="sr-foot">
@@ -1478,14 +1477,12 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             <div class="settings-tabs-std" id="tabsStd">
                 <div class="settings-tab active" data-tab="game">🎮 ИГРА</div>
                 <div class="settings-tab" data-tab="visuals">🎨 ИНТЕРФЕЙС</div>
-                <div class="settings-tab" data-tab="effects">✨ ЭФФЕКТЫ</div>
                 <div class="settings-tab" data-tab="plugins">🧩 ПЛАГИНЫ</div>
             </div>
             <!-- macOS tabs -->
             <div class="settings-tabs" id="tabsMac">
                 <div class="settings-tab-mac active" data-tab="game">Игра</div>
                 <div class="settings-tab-mac" data-tab="visuals">Интерфейс</div>
-                <div class="settings-tab-mac" data-tab="effects">Эффекты</div>
                 <div class="settings-tab-mac" data-tab="plugins">Плагины</div>
             </div>
 
@@ -1598,10 +1595,6 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
                                 <label class="stg-toggle"><input type="checkbox" id="sheenToggle" checked><div class="stg-track"></div></label>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- ═══ TAB: EFFECTS ═══ -->
-                    <div class="settings-page" id="page-effects">
                         <div class="setting-section" style="--sect-accent:rgba(0,180,255,0.4)">
                             <div class="setting-section-header">
                                 <span class="dot" style="background:var(--cyan);box-shadow:0 0 5px var(--cyan)"></span>
@@ -2066,19 +2059,19 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
     /* ══ App Data ══ */
     var servers=[
-        {name:"RED",   ip:"80.66.82.192",port:7777,color:"#ff2244",dimColor:"rgba(255,34,68,0.12)"},
-        {name:"YELLOW",ip:"80.66.82.193",port:7777,color:"#ffd000",dimColor:"rgba(255,208,0,0.1)"},
-        {name:"GREEN", ip:"80.66.82.194",port:7777,color:"#00ff88",dimColor:"rgba(0,255,136,0.1)"},
-        {name:"AZURE", ip:"80.66.82.195",port:7777,color:"#00cfff",dimColor:"rgba(0,207,255,0.1)"},
-        {name:"SILVER",ip:"80.66.82.196",port:7777,color:"#c0c0d8",dimColor:"rgba(192,192,216,0.08)"},
-        {name:"ROSE",  ip:"80.66.71.6",  port:7777,color:"#ff69b4",dimColor:"rgba(255,105,180,0.12)"},
-        {name:"BLACK", ip:"80.66.82.40", port:7777,color:"#303036",dimColor:"rgba(48,48,54,0.5)"},
-        {name:"SKY",   ip:"80.66.82.41", port:7777,color:"#87ceeb",dimColor:"rgba(135,206,235,0.1)"},
-        {name:"TITAN", ip:"80.66.82.165",port:7777,color:"#b07fe8",dimColor:"rgba(176,127,232,0.12)"},
-        {name:"X",     ip:"80.66.82.185",port:7777,color:"#ff9900",dimColor:"rgba(255,153,0,0.12)"},
-        {name:"FIRE",  ip:"80.66.82.163",port:7777,color:"#ff4411",dimColor:"rgba(255,68,17,0.12)"},
-        {name:"LIME",  ip:"80.66.82.189",port:7777,color:"#aaff00",dimColor:"rgba(170,255,0,0.1)"},
-        {name:"???",   ip:"",            port:0,   color:"#ff2244",dimColor:"rgba(255,255,255,0.08)",comingSoon:true}
+        {name:"RED",   icon:"◈", ip:"80.66.82.192",port:7777,color:"#ff2244",dimColor:"rgba(255,34,68,0.12)"},
+        {name:"YELLOW",icon:"☼",ip:"80.66.82.193",port:7777,color:"#ffd000",dimColor:"rgba(255,208,0,0.1)"},
+        {name:"GREEN", icon:"✿",ip:"80.66.82.194",port:7777,color:"#00ff88",dimColor:"rgba(0,255,136,0.1)"},
+        {name:"AZURE", icon:"≋", ip:"80.66.82.195",port:7777,color:"#00cfff",dimColor:"rgba(0,207,255,0.1)"},
+        {name:"SILVER",icon:"◉",ip:"80.66.82.196",port:7777,color:"#c0c0d8",dimColor:"rgba(192,192,216,0.08)"},
+        {name:"ROSE",  icon:"❀",ip:"80.66.71.6",  port:7777,color:"#ff69b4",dimColor:"rgba(255,105,180,0.12)"},
+        {name:"BLACK", icon:"◐",ip:"80.66.82.40", port:7777,color:"#303036",dimColor:"rgba(48,48,54,0.5)"},
+        {name:"SKY",   icon:"☁",ip:"80.66.82.41", port:7777,color:"#87ceeb",dimColor:"rgba(135,206,235,0.1)"},
+        {name:"TITAN", icon:"⬡",ip:"80.66.82.165",port:7777,color:"#b07fe8",dimColor:"rgba(176,127,232,0.12)"},
+        {name:"X",     icon:"✕",ip:"80.66.82.185",port:7777,color:"#ff9900",dimColor:"rgba(255,153,0,0.12)"},
+        {name:"FIRE",  icon:"▲",ip:"80.66.82.163",port:7777,color:"#ff4411",dimColor:"rgba(255,68,17,0.12)"},
+        {name:"LIME",  icon:"✳",ip:"80.66.82.189",port:7777,color:"#aaff00",dimColor:"rgba(170,255,0,0.1)"},
+        {name:"???",   icon:"…",ip:"",            port:0,   color:"#ff2244",dimColor:"rgba(255,255,255,0.08)",comingSoon:true}
     ];
     var selectedServer=servers[0],selectedFolder="",serverNicks={},selectedProcess="amazing";
     var comingSoonRevealed=false; // сервер 13 - заблюренная "тизер"-карточка, раскрывается по клику
@@ -2110,7 +2103,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             d.style.setProperty('--accent',srv.color); d.style.setProperty('--accent-dim',srv.dimColor);
             var nameSrc=isSoon?(comingSoonRevealed?'Скоро!':srv.name):srv.name;
             var nameHtml=nameSrc.split('').map(function(ch,i){return '<span class="letter" style="animation-delay:'+(i*0.045)+'s">'+(ch===' '?'&nbsp;':ch)+'</span>';}).join('');
-            d.innerHTML='<div class="server-glow"></div><div class="srv-ico'+(isSoon?' srv-ico-soon':'')+'" data-v="'+(_si%5)+'"><i></i><i></i><b class="srv-num">'+(_si+1)+'</b></div><div class="srv-txt"><div class="server-name'+(isSoon?' server-name-soon':'')+'">'+nameHtml+'</div><div class="server-ip">'+(isSoon?'':srv.ip)+'</div></div>';
+            d.innerHTML='<div class="server-glow"></div><div class="srv-ico'+(isSoon?' srv-ico-soon':'')+'" data-v="'+(_si%5)+'"><i></i><i></i><b class="srv-num">'+srv.icon+'</b></div><div class="srv-txt"><div class="server-name'+(isSoon?' server-name-soon':'')+'">'+nameHtml+'</div><div class="server-ip">'+(isSoon?'':srv.ip)+'</div></div>';
             if(isSoon){
                 // Тизер 13-го сервера: по клику (не по hover) снимаем блюр и показываем "Скоро!".
                 // Реальным выбираемым сервером он не становится - у него нет ip/port для подключения.
@@ -2816,9 +2809,9 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         var modal = ov.querySelector('.settings-modal'), gear = document.getElementById('gearBtn'), ind = document.getElementById('srInd'), ghost = document.getElementById('sxGhost');
         var P = {
             game:    { i:0, kick:'ゲーム · Game',      title:'Игра',      sub:'Инжект, листва и целевой процесс',          k:'遊' },
-            visuals: { i:1, kick:'画面 · Interface',   title:'Интерфейс', sub:'Анимации и отклик элементов лаунчера',      k:'画' },
-            effects: { i:2, kick:'効果 · Effects',     title:'Эффекты',   sub:'Атмосфера фона: частицы, звёзды и молнии', k:'光' },
-            plugins: { i:3, kick:'拡張 · Plugins',     title:'Плагины',   sub:'Встроенные модули: включение и описание',  k:'拡' }
+            visuals: { i:1, kick:'画面 + 効果 · Interface', title:'Интерфейс', sub:'Настройка внешнего вида и фоновых эффектов', k:'画' },
+
+            plugins: { i:2, kick:'拡張 · Plugins',     title:'Плагины',   sub:'Встроенные модули: включение и описание',  k:'拡' }
         };
         function $(id){ return document.getElementById(id); }
         function cur(){ var p = modal.querySelector('.settings-page.active'); return p ? p.id.replace('page-', '') : 'game'; }
@@ -3097,6 +3090,29 @@ body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
     btn.addEventListener('click', function(e){ e.stopPropagation(); open(!b.classList.contains('bld-open')); });
     document.getElementById('bldBack').addEventListener('click', function(){ open(false); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') open(false); });
+})();
+</script>
+<style>
+/* Настройки: колесо прокручивает активный раздел даже над боковой навигацией */
+body.theme-macos.mj .settings-scroll { overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.18) transparent; }
+body.theme-macos.mj .settings-scroll::-webkit-scrollbar { width:5px; }
+body.theme-macos.mj .settings-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:8px; }
+body.theme-macos.mj .srv-num { font-family:'Segoe UI Symbol','Apple Symbols','Noto Sans Symbols 2',sans-serif; font-size:23px; font-weight:600; }
+body.theme-macos.mj .server[data-srv="black"] .srv-ico { color:#fff; }
+</style>
+<script>
+(function(){
+    var nav=document.getElementById('srNav');
+    if(!nav)return;
+    nav.addEventListener('wheel',function(e){
+        if(Math.abs(e.deltaY)<Math.abs(e.deltaX))return;
+        var items=Array.prototype.slice.call(nav.querySelectorAll('.sr-it'));
+        if(!items.length)return;
+        e.preventDefault();
+        var current=items.findIndex(function(item){return item.classList.contains('on');});
+        var next=Math.max(0,Math.min(items.length-1,current+(e.deltaY>0?1:-1)));
+        if(next!==current)items[next].click();
+    },{passive:false});
 })();
 </script>
 </body>
