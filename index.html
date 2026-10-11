@@ -2074,7 +2074,15 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         {name:"???",   icon:"…",ip:"",            port:0,   color:"#ff2244",dimColor:"rgba(255,255,255,0.08)",comingSoon:true}
     ];
     var selectedServer=servers[0],selectedFolder="",serverNicks={},selectedProcess="amazing";
-    var comingSoonRevealed=false; // сервер 13 - заблюренная "тизер"-карточка, раскрывается по клику
+    var comingSoonRevealed=false; // сервер 13 - заблюренная "тизер"-карточка, раскрывается по клику    
+    var favoriteServers=[];
+    try { favoriteServers=JSON.parse(localStorage.getItem('tokyoFavoriteServers')||'[]').filter(function(n){return servers.some(function(s){return s.name===n&&!s.comingSoon;});}); } catch(e) { favoriteServers=[]; }
+    function toggleFavorite(srv){
+        var i=favoriteServers.indexOf(srv.name);
+        if(i<0) favoriteServers.push(srv.name); else favoriteServers.splice(i,1);
+        try { localStorage.setItem('tokyoFavoriteServers',JSON.stringify(favoriteServers)); } catch(e) {}
+        renderServers();
+    }
 
     function setProc(p){
         selectedProcess=p;
@@ -2095,15 +2103,20 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
     }
     function renderServers(){
         var c=document.getElementById('servers');var _st=c.scrollTop;c.innerHTML='';
-        servers.forEach(function(srv,_si){
+        servers.slice().sort(function(a,b){ var af=favoriteServers.indexOf(a.name), bf=favoriteServers.indexOf(b.name); if(af<0&&bf<0)return 0; if(af<0)return 1; if(bf<0)return -1; return af-bf; }).forEach(function(srv,_si){
             var d=document.createElement('div');
             var isSoon=!!srv.comingSoon;
-            d.className='server'+(selectedServer===srv?' selected':'')+(isSoon?' server-soon'+(comingSoonRevealed?' revealed':''):'');
+            var isFavorite=favoriteServers.indexOf(srv.name)>=0;
+            d.className='server'+(selectedServer===srv?' selected':'')+(isFavorite?' is-favorite':'')+(isSoon?' server-soon'+(comingSoonRevealed?' revealed':''):'');
             d.dataset.srv=srv.name.toLowerCase();
             d.style.setProperty('--accent',srv.color); d.style.setProperty('--accent-dim',srv.dimColor);
             var nameSrc=isSoon?(comingSoonRevealed?'Скоро!':srv.name):srv.name;
             var nameHtml=nameSrc.split('').map(function(ch,i){return '<span class="letter" style="animation-delay:'+(i*0.045)+'s">'+(ch===' '?'&nbsp;':ch)+'</span>';}).join('');
             d.innerHTML='<div class="server-glow"></div><div class="srv-ico'+(isSoon?' srv-ico-soon':'')+'" data-v="'+(_si%5)+'"><span class="srv-brand">AMAZING</span><span class="srv-word">'+(isSoon?(comingSoonRevealed?'Скоро!':'???'):srv.name)+'</span></div><div class="srv-txt"><div class="server-name'+(isSoon?' server-name-soon':'')+'">'+nameHtml+'</div><div class="server-ip">'+(isSoon?'':srv.ip)+'</div></div>';
+            if(isFavorite) d.innerHTML+='<span class="srv-pin" title="Закреплённый сервер">⌖</span>';
+            var swipeStart=null;
+            d.addEventListener('pointerdown',function(e){ if(e.button!==undefined&&e.button!==0)return; swipeStart={x:e.clientX,y:e.clientY}; });
+            d.addEventListener('pointerup',function(e){ if(!swipeStart)return; var dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y; swipeStart=null; if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.25&&!isSoon){ e.preventDefault(); e.stopPropagation(); toggleFavorite(srv); } });
             if(isSoon){
                 // Тизер 13-го сервера: по клику (не по hover) снимаем блюр и показываем "Скоро!".
                 // Реальным выбираемым сервером он не становится - у него нет ip/port для подключения.
@@ -3124,6 +3137,12 @@ body.theme-macos.mj .srv-word { position:relative; z-index:2; max-width:100%; ov
 body.theme-macos.mj .server.selected .srv-ico { box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),0 0 0 1px var(--accent),0 6px 12px rgba(0,0,0,.55); }
 body.theme-macos.mj .srv-ico-soon .srv-brand { color:#fff; }
 body.theme-macos.mj .srv-ico-soon .srv-word { color:#fff; }
+</style>
+<style>
+/* Избранное: закреплённые серверы поднимаются вверх, жест влево/вправо */
+body.theme-macos.mj .server { touch-action:pan-y; }
+body.theme-macos.mj .server.is-favorite { background:rgba(255,255,255,.035); }
+body.theme-macos.mj .srv-pin { position:absolute; z-index:4; right:42px; top:50%; transform:translateY(-50%); color:#f5c451; font-size:18px; line-height:1; text-shadow:0 0 9px rgba(245,196,81,.4); pointer-events:none; }
 </style>
 </body>
 </html>
