@@ -2113,10 +2113,14 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             var nameSrc=isSoon?(comingSoonRevealed?'Скоро!':srv.name):srv.name;
             var nameHtml=nameSrc.split('').map(function(ch,i){return '<span class="letter" style="animation-delay:'+(i*0.045)+'s">'+(ch===' '?'&nbsp;':ch)+'</span>';}).join('');
             d.innerHTML='<div class="server-glow"></div><div class="srv-ico'+(isSoon?' srv-ico-soon':'')+'" data-v="'+(_si%5)+'"><span class="srv-brand">AMAZING</span><span class="srv-word">'+(isSoon?(comingSoonRevealed?'Скоро!':'???'):srv.name)+'</span></div><div class="srv-txt"><div class="server-name'+(isSoon?' server-name-soon':'')+'">'+nameHtml+'</div><div class="server-ip">'+(isSoon?'':srv.ip)+'</div></div>';
-            if(isFavorite) d.innerHTML+='<span class="srv-pin" title="Закреплённый сервер">⌖</span>';
-            var swipeStart=null;
-            d.addEventListener('pointerdown',function(e){ if(e.button!==undefined&&e.button!==0)return; swipeStart={x:e.clientX,y:e.clientY}; });
-            d.addEventListener('pointerup',function(e){ if(!swipeStart)return; var dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y; swipeStart=null; if(Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.25&&!isSoon){ e.preventDefault(); e.stopPropagation(); toggleFavorite(srv); } });
+            if(isFavorite) d.innerHTML+='<span class="srv-pin" title="Закреплённый сервер"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4l2.92 5.92 6.53.95-4.72 4.6 1.11 6.5L12 17.3l-5.84 3.07 1.12-6.5-4.73-4.6 6.54-.95L12 2.4z"/></svg></span>';
+            if(!isSoon) d.innerHTML+='<span class="srv-swipe-hint"></span>';
+            var swipeStart=null,swiping=false;
+            function resetSwipe(){ if(!swiping)return; swiping=false; d.classList.remove('swiping','swipe-left','swipe-right'); d.style.removeProperty('--swipe-x'); }
+            d.addEventListener('pointerdown',function(e){ if(e.button!==undefined&&e.button!==0)return; swipeStart={x:e.clientX,y:e.clientY,id:e.pointerId}; swiping=false; });
+            d.addEventListener('pointermove',function(e){ if(!swipeStart||isSoon)return; var dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y; if(Math.abs(dx)<8||Math.abs(dx)<Math.abs(dy)*1.15)return; swiping=true; d.classList.add('swiping'); d.classList.toggle('swipe-left',dx<0); d.classList.toggle('swipe-right',dx>0); d.style.setProperty('--swipe-x',Math.max(-88,Math.min(88,dx)) + 'px'); var hint=d.querySelector('.srv-swipe-hint'); if(hint)hint.textContent=isFavorite?(dx>0?'Отпустите, чтобы открепить':'→ Потяните вправо, чтобы открепить'):(dx<0?'Отпустите, чтобы закрепить':'← Потяните влево, чтобы закрепить'); });
+            d.addEventListener('pointerup',function(e){ if(!swipeStart)return; var dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y,gesture=Math.abs(dx)>48&&Math.abs(dx)>Math.abs(dy)*1.25&&!isSoon,done=gesture&&((!isFavorite&&dx<0)||(isFavorite&&dx>0)); swipeStart=null; if(gesture){ e.preventDefault(); e.stopPropagation(); if(done){toggleFavorite(srv);return;} } resetSwipe(); });
+            d.addEventListener('pointercancel',function(){swipeStart=null;resetSwipe();});
             if(isSoon){
                 // Тизер 13-го сервера: по клику (не по hover) снимаем блюр и показываем "Скоро!".
                 // Реальным выбираемым сервером он не становится - у него нет ip/port для подключения.
@@ -3142,7 +3146,17 @@ body.theme-macos.mj .srv-ico-soon .srv-word { color:#fff; }
 /* Избранное: закреплённые серверы поднимаются вверх, жест влево/вправо */
 body.theme-macos.mj .server { touch-action:pan-y; }
 body.theme-macos.mj .server.is-favorite { background:rgba(255,255,255,.035); }
-body.theme-macos.mj .srv-pin { position:absolute; z-index:4; right:42px; top:50%; transform:translateY(-50%); color:#f5c451; font-size:18px; line-height:1; text-shadow:0 0 9px rgba(245,196,81,.4); pointer-events:none; }
+body.theme-macos.mj .srv-pin { position:absolute; z-index:4; right:42px; top:50%; transform:translateY(-50%); width:19px; height:19px; display:grid; place-items:center; color:#ffd45c; filter:drop-shadow(0 0 5px rgba(255,196,48,.48)); pointer-events:none; }
+body.theme-macos.mj .srv-pin svg { width:16px; height:16px; fill:currentColor; }
+</style>
+<style>
+body.theme-macos.mj .server.swiping { z-index:3; transform:translateX(var(--swipe-x,0)) !important; background:rgba(255,255,255,.08); transition:background .12s; }
+body.theme-macos.mj .server.swiping::before { inset:0; width:auto; height:auto; background:linear-gradient(90deg,rgba(52,199,89,.22),transparent 68%); opacity:1; box-shadow:none; }
+body.theme-macos.mj .server.swiping.swipe-right::before { background:linear-gradient(270deg,rgba(255,190,55,.18),transparent 68%); }
+body.theme-macos.mj .srv-swipe-hint { position:absolute; z-index:5; right:15px; top:50%; transform:translateY(-50%) scale(.96); padding:7px 10px; border-radius:999px; background:#25251f; color:#ffe28a; box-shadow:inset 0 0 0 1px rgba(255,220,120,.18); font-size:11px; font-weight:600; white-space:nowrap; opacity:0; transition:opacity .12s,transform .16s; pointer-events:none; }
+body.theme-macos.mj .server.swiping .srv-swipe-hint { opacity:1; transform:translateY(-50%) scale(1); }
+body.theme-macos.mj .server.swipe-left .srv-swipe-hint { background:#183222; color:#a8f0be; box-shadow:inset 0 0 0 1px rgba(91,220,132,.22); }
+body.theme-macos.mj .server.swipe-right .srv-swipe-hint { background:#302819; color:#ffe28a; }
 </style>
 </body>
 </html>
