@@ -3071,7 +3071,7 @@ body.pay-open #payBar { display:none !important; }
     function open(v){body.classList.toggle('bld-open',v);btn.setAttribute('aria-expanded',v?'true':'false')}
     function render(builds){
         list.querySelectorAll('.bld-card').forEach(function(card){card.remove()});
-        if(!Array.isArray(builds)||!builds.length)builds=[{name:'Тестовая карточка',version:'Демо · проверка окна Boosty',boostyUrl:'https://boosty.to/',isDemo:true}];
+        if(!Array.isArray(builds)||!builds.length){empty.style.display='block';empty.textContent='Пока нет сборок';return}
         empty.style.display='none';
         builds.forEach(function(build){
             var card=document.createElement('article');card.className='bld-card';
@@ -3079,7 +3079,7 @@ body.pay-open #payBar { display:none !important; }
             var price=document.createElement('p');price.className='bld-price';price.textContent=build.version||'Платная сборка';card.appendChild(price);
             var buy=document.createElement('button');buy.type='button';buy.className='bld-buy';var url='';
             try{var u=new URL(build.boostyUrl||'');if(u.protocol==='https:'&&(u.hostname==='boosty.to'||u.hostname.endsWith('.boosty.to')))url=u.href}catch(e){}
-            buy.textContent=url?(build.isDemo?'Открыть Boosty (тест)':'Купить на Boosty'):'Скоро';buy.disabled=!url;
+            buy.textContent=url?'Купить на Boosty':'Скоро';buy.disabled=!url;
             if(url)buy.addEventListener('click',function(){window.openBoosty(url)});
             card.appendChild(buy);list.appendChild(card);
         });
