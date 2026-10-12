@@ -1685,6 +1685,11 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         </div>
     </div>
 
+    <div id="payBar" style="position:fixed;left:0;right:0;top:40px;height:44px;z-index:95;display:none;align-items:center;gap:10px;padding:0 14px;background:#0f0f12;border-bottom:1px solid rgba(255,255,255,.08);color:#f4f4f5;font:600 13px 'Inter',sans-serif">
+        <button id="payBack" type="button" style="height:30px;padding:0 14px;border:0;border-radius:8px;background:#26262c;color:#fff;cursor:pointer">← Назад</button>
+        <span style="flex:1">Boosty · вход и оплата</span>
+        <button id="payClose" type="button" style="height:30px;padding:0 14px;border:0;border-radius:8px;background:#26262c;color:#fff;cursor:pointer">✕ Закрыть</button>
+    </div>
     <div class="wrapper">
         <div class="header">
             <div class="header-sub">アメイジングオンライン · LAUNCHER · 最強</div>
@@ -3047,66 +3052,46 @@ body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-rate svg { width:16px; height:16px; fill:#ffc928; }
 .bld-name { margin:0 3px; font-size:17px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
 .bld-price { padding:12px; border-radius:11px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:700; color:#8e8e98; }
+.bld-buy { width:100%; min-height:38px; border:0; border-radius:11px; background:#f15b7a; color:#fff; font:600 13px 'Inter',sans-serif; cursor:pointer; }
+.bld-buy:disabled { background:#34343c; color:#9999a3; cursor:default; }
+body.pay-open #payBar { display:flex !important; }
 </style>
 <div id="bldBack"></div>
 <div id="bldPop" role="dialog" aria-label="Сборки">
     <div class="bld-sub">Последние платные сборки</div>
-    <div class="bld-body">
-        <!-- ═══ КАРТОЧКА: Tokyo ═══ -->
-        <article class="bld-card">
-            <div class="bld-cover">
-                <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tokyo">
-  <defs>
-    <radialGradient id="tkG2" cx=".5" cy=".38" r=".7">
-      <stop offset="0" stop-color="#2a2a2e"/>
-      <stop offset=".6" stop-color="#0b0b0d"/>
-      <stop offset="1" stop-color="#000"/>
-    </radialGradient>
-    <linearGradient id="tkSun2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#bdbdc4"/>
-    </linearGradient>
-    <clipPath id="tkClip2"><circle cx="200" cy="170" r="92"/></clipPath>
-  </defs>
-  <rect width="400" height="400" fill="url(#tkG2)"/>
-  <!-- солнце с горизонтальными прорезями -->
-  <g clip-path="url(#tkClip2)">
-    <rect x="100" y="70" width="200" height="200" fill="url(#tkSun2)"/>
-    <rect x="100" y="190" width="200" height="5" fill="#000"/>
-    <rect x="100" y="212" width="200" height="8" fill="#000"/>
-    <rect x="100" y="238" width="200" height="12" fill="#000"/>
-  </g>
-  <!-- тории -->
-  <g fill="#000" stroke="#fff" stroke-width="2.5" stroke-linejoin="round">
-    <path d="M92 218 Q200 236 308 218 L316 202 Q200 224 84 202 Z" />
-    <rect x="108" y="232" width="184" height="9" />
-    <rect x="124" y="232" width="13" height="108" />
-    <rect x="263" y="232" width="13" height="108" />
-    <rect x="192" y="226" width="16" height="22" />
-  </g>
-  <!-- земля -->
-  <rect x="60" y="340" width="280" height="1.5" fill="#fff" opacity=".5"/>
-  <rect x="120" y="352" width="160" height="1.5" fill="#fff" opacity=".25"/>
-  <rect x="20" y="20" width="360" height="360" rx="4" fill="none" stroke="#fff" stroke-opacity=".12"/>
-</svg>
-            </div>
-            <div class="bld-rate">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.1 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
-                5.0
-            </div>
-            <h3 class="bld-name">Tokyo</h3>
-            <div class="bld-price">Скоро</div>
-        </article>
-        <!-- ═══ КОНЕЦ КАРТОЧКИ ═══ -->
+    <div class="bld-body" id="bldList">
+        <div class="bld-empty" id="bldEmpty" style="padding:20px;text-align:center;color:#8e8e98">Загружаем сборки...</div>
     </div>
 </div>
 <script>
 (function(){
-    var b = document.body, btn = document.getElementById('bldBtn');
-    function open(v){ b.classList.toggle('bld-open', v); btn.setAttribute('aria-expanded', v ? 'true' : 'false'); }
-    btn.addEventListener('click', function(e){ e.stopPropagation(); open(!b.classList.contains('bld-open')); });
-    document.getElementById('bldBack').addEventListener('click', function(){ open(false); });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') open(false); });
+    var body=document.body,btn=document.getElementById('bldBtn'),list=document.getElementById('bldList'),empty=document.getElementById('bldEmpty');
+    function post(o){try{window.chrome.webview.postMessage(JSON.stringify(o))}catch(e){}}
+    function open(v){body.classList.toggle('bld-open',v);btn.setAttribute('aria-expanded',v?'true':'false')}
+    function render(builds){
+        list.querySelectorAll('.bld-card').forEach(function(card){card.remove()});
+        if(!Array.isArray(builds)||!builds.length)builds=[{name:'Тестовая карточка',version:'Демо · проверка окна Boosty',boostyUrl:'https://boosty.to/',isDemo:true}];
+        empty.style.display='none';
+        builds.forEach(function(build){
+            var card=document.createElement('article');card.className='bld-card';
+            var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
+            var price=document.createElement('p');price.className='bld-price';price.textContent=build.version||'Платная сборка';card.appendChild(price);
+            var buy=document.createElement('button');buy.type='button';buy.className='bld-buy';var url='';
+            try{var u=new URL(build.boostyUrl||'');if(u.protocol==='https:'&&(u.hostname==='boosty.to'||u.hostname.endsWith('.boosty.to')))url=u.href}catch(e){}
+            buy.textContent=url?(build.isDemo?'Открыть Boosty (тест)':'Купить на Boosty'):'Скоро';buy.disabled=!url;
+            if(url)buy.addEventListener('click',function(){window.openBoosty(url)});
+            card.appendChild(buy);list.appendChild(card);
+        });
+    }
+    btn.addEventListener('click',function(e){e.stopPropagation();var show=!body.classList.contains('bld-open');open(show);if(show)post({action:'getAvailableBuilds'})});
+    document.getElementById('bldBack').addEventListener('click',function(){open(false)});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')open(false)});
+    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds)});
+    window.openBoosty=function(url){body.classList.add('pay-open');post({action:'openBoosty',url:url})};
+    function closePay(){body.classList.remove('pay-open');post({action:'closeBoosty'})}
+    document.getElementById('payBack').onclick=function(){post({action:'boostyBack'})};
+    document.getElementById('payClose').onclick=closePay;
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&body.classList.contains('pay-open'))closePay()});
 })();
 </script>
 <style>
