@@ -3047,7 +3047,8 @@ body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 14px 14px; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
 .bld-card { display:flex; flex-direction:column; gap:9px; padding:10px; border-radius:16px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
 .bld-cover { width:100%; aspect-ratio:1/1; border-radius:11px; overflow:hidden; background:#000; }
-.bld-cover svg { width:100%; height:100%; display:block; }
+.bld-cover svg, .bld-cover img { width:100%; height:100%; display:block; }
+.bld-cover img { object-fit:cover; }
 .bld-rate { align-self:flex-end; display:flex; align-items:center; gap:6px; padding:7px 13px; border-radius:10px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:600; color:#ffc928; }
 .bld-rate svg { width:16px; height:16px; fill:#ffc928; }
 .bld-name { margin:0 3px; font-size:17px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
@@ -3074,7 +3075,7 @@ body.pay-open #payBar { display:none !important; }
         empty.style.display='none';
         builds.forEach(function(build){
             var card=document.createElement('article');card.className='bld-card';
-            var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
+            var imageUrl='';try{var image=new URL(build.imageUrl||'');if(image.protocol==='https:')imageUrl=image.href}catch(e){}if(imageUrl){var cover=document.createElement('div');cover.className='bld-cover';var img=document.createElement('img');img.src=imageUrl;img.alt=build.name||'Обложка сборки';img.loading='lazy';img.onerror=function(){cover.remove()};cover.appendChild(img);card.appendChild(cover)}var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
             var price=document.createElement('p');price.className='bld-price';price.textContent=build.version||'Платная сборка';card.appendChild(price);
             var buy=document.createElement('button');buy.type='button';buy.className='bld-buy';var url='';
             try{var u=new URL(build.boostyUrl||'');if(u.protocol==='https:'&&(u.hostname==='boosty.to'||u.hostname.endsWith('.boosty.to')))url=u.href}catch(e){}
