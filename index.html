@@ -3054,7 +3054,7 @@ body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-price { padding:12px; border-radius:11px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:700; color:#8e8e98; }
 .bld-buy { width:100%; min-height:38px; border:0; border-radius:11px; background:#f15b7a; color:#fff; font:600 13px 'Inter',sans-serif; cursor:pointer; }
 .bld-buy:disabled { background:#34343c; color:#9999a3; cursor:default; }
-body.pay-open #payBar { display:flex !important; }
+body.pay-open #payBar { display:none !important; }
 </style>
 <div id="bldBack"></div>
 <div id="bldPop" role="dialog" aria-label="Сборки">
@@ -3086,8 +3086,8 @@ body.pay-open #payBar { display:flex !important; }
     btn.addEventListener('click',function(e){e.stopPropagation();var show=!body.classList.contains('bld-open');open(show);if(show)post({action:'getAvailableBuilds'})});
     document.getElementById('bldBack').addEventListener('click',function(){open(false)});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')open(false)});
-    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds)});
-    window.openBoosty=function(url){body.classList.add('pay-open');post({action:'openBoosty',url:url})};
+    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds);if(d&&d.action==='boostyClosed')body.classList.remove('pay-open')});
+    window.openBoosty=function(url){body.classList.remove('bld-open');btn.setAttribute('aria-expanded','false');body.classList.add('pay-open');post({action:'openBoosty',url:url})};
     function closePay(){body.classList.remove('pay-open');post({action:'closeBoosty'})}
     document.getElementById('payBack').onclick=function(){post({action:'boostyBack'})};
     document.getElementById('payClose').onclick=closePay;
