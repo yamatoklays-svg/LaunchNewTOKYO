@@ -2,12 +2,34 @@
   {
     "id": "refpoolfix",
     "name": "RefPoolFix",
-    "short": "Фикс просадок FPS в толпе",
-    "desc": "Убирает просадки FPS в людных местах: игра больше не тратит до 30% кадра на пересчёт ссылок между объектами. • Пул ссылок расширяется, когда в нём не хватает места • Старые ссылки чистятся понемногу каждый кадр • До +40% FPS в толпе, чем больше народу, тем заметнее эффект • В пустых местах разницы нет • Логика игры не меняется",
+    "short": "Исправление вылетов из-за пула ссылок",
+    "desc": "Исправляет вылеты, связанные с переполнением пула ссылок игры. • Работает автоматически • Настроек нет",
     "version": "1.0",
     "file": "RefPoolFix.dll",
     "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/refpoolfix_1.0.bin",
     "sha256": "b9f0e9b35f722292e457937b425f20ea12a4d8f1a1cbba7c4fed49bd2f160ff2",
+    "icon": "🛠"
+  },
+  {
+    "id": "fpsboost",
+    "name": "FPS Boost",
+    "short": "Больше FPS: свет, аксессуары, мыло",
+    "desc": "Повышает FPS, отключая тяжёлые эффекты. • Убрать свет: фары, короны и динамическое освещение • Убрать аксессуары у игроков рядом, радиус настраивается • Мыльная графика с пресетами и ручной настройкой • Клавиша меню меняется в настройках",
+    "version": "1.0",
+    "file": "FPSBoost.dll",
+    "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/fpsboost_1.0.bin",
+    "sha256": "be8774c6ea1b9e7ab8ed27dbfadbe25e87a276e1e5d45ce25e9b057b75420bea",
     "icon": "⚡"
+  },
+  {
+    "id": "overlay",
+    "name": "Оверлей",
+    "short": "Лимит FPS и клавиши на экране",
+    "desc": "Оверлей с панелью настроек на F10. • Ограничитель FPS с выбором лимита и отключением VSync • Показ нажатых клавиш и кнопок мыши на экране • 7 стилей клавиш и свой набор клавиш • Клавиша открытия панели настраивается",
+    "version": "1.0",
+    "file": "Overlay.dll",
+    "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/overlay_1.0.bin",
+    "sha256": "43fe8a3c9de00e24c9edc225b5764dd23e7e6283161b0bec58a61719be446c54",
+    "icon": "🎮"
   }
 ]
