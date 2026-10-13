@@ -1648,7 +1648,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
                         <div class="setting-section" style="--sect-accent:rgba(48,209,88,0.4)">
                             <div class="setting-section-header">
                                 <span class="dot" style="background:#30d158;box-shadow:0 0 5px #30d158"></span>
-                                ВСТРОЕННЫЕ ПЛАГИНЫ · プラグイン
+                                ПЛАГИНЫ · プラグイン
                             </div>
                             <div id="pluginsList"><div class="plg-empty">Загрузка…</div></div>
                         </div>
@@ -2833,7 +2833,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             game:    { i:0, kick:'ゲーム · Game',      title:'Игра',      sub:'Инжект, листва и целевой процесс',          k:'遊' },
             visuals: { i:1, kick:'画面 + 効果 · Interface', title:'Интерфейс', sub:'Настройка внешнего вида и фоновых эффектов', k:'画' },
 
-            plugins: { i:2, kick:'拡張 · Plugins',     title:'Плагины',   sub:'Встроенные модули: включение и описание',  k:'拡' }
+            plugins: { i:2, kick:'拡張 · Plugins',     title:'Плагины',   sub:'Модули: включение и описание',  k:'拡' }
         };
         function $(id){ return document.getElementById(id); }
         function cur(){ var p = modal.querySelector('.settings-page.active'); return p ? p.id.replace('page-', '') : 'game'; }
@@ -2868,6 +2868,19 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
 .plg-row.na { opacity:.55; }
 .plg-name { border-bottom:1px dashed rgba(255,255,255,.25); }
 .plg-ver { margin-left:8px; font-size:10.5px; font-weight:600; letter-spacing:.06em; color:#6e6e78; }
+.plg-main { display:flex; align-items:center; gap:14px; min-width:0; flex:1; }
+.plg-ic { --h:150; width:44px; height:44px; flex-shrink:0; display:grid; place-items:center; font-size:22px; line-height:1; border-radius:14px;
+    background:linear-gradient(135deg, hsla(var(--h),75%,58%,.30), hsla(var(--h),75%,42%,.10)); border:1px solid hsla(var(--h),75%,62%,.35);
+    box-shadow:0 8px 22px -12px hsla(var(--h),80%,55%,.9), inset 0 1px 0 rgba(255,255,255,.12); }
+.plg-top { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+.plg-src { font-size:9px; font-weight:700; letter-spacing:.12em; padding:2px 7px; border-radius:999px; text-transform:uppercase; }
+.plg-src.gh { background:rgba(48,209,88,.14); color:#30d158; border:1px solid rgba(48,209,88,.28); }
+.plg-src.bi { background:rgba(255,255,255,.06); color:#8d8d97; border:1px solid rgba(255,255,255,.1); }
+.plg-meta { margin-top:3px; font-size:11px; color:#6e6e78; }
+.plg-meta span + span::before { content:'\00B7'; margin:0 6px; }
+.plg-row .plg-ver { margin-left:0; }
+.plg-row .plg-name { border-bottom:none; }
+.plg-row:hover .plg-ic { transform:translateY(-1px) scale(1.04); transition:transform .18s; }
 .plg-empty { padding:18px 20px; color:#8d8d97; font-size:13px; }
 .plg-note { padding:0 6px; font-size:11.5px; line-height:1.5; color:#6e6e78; }
 .plg-tip { position:fixed; z-index:300; left:0; top:0; max-width:310px; padding:13px 15px; border-radius:14px; background:rgba(18,18,24,.97); border:1px solid rgba(255,255,255,.1); box-shadow:0 18px 44px -10px #000; color:#cfd0d8; font-size:12.5px; line-height:1.45; pointer-events:none; opacity:0; transform:translateY(4px); transition:opacity .15s, transform .15s; }
@@ -2887,7 +2900,7 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
     function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
     function tipHtml(p){
         var parts = String(p.desc || '').split('\u2022').filter(function(x){ return x.indexOf('plugin_overlay.ini') < 0; });
-        var h = '<b>' + esc(p.name) + '</b>' + esc(parts[0].trim());
+        var h = '<b>' + (p.icon ? esc(p.icon) + ' ' : '') + esc(p.name) + '</b>' + esc(parts[0].trim());
         if (parts.length > 1) {
             h += '<ul>';
             for (var i = 1; i < parts.length; i++) h += '<li>' + esc(parts[i].trim()) + '</li>';
@@ -2901,13 +2914,22 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
         var n = 0; data.forEach(function(p){ if (p.enabled && p.available) n++; });
         el.textContent = data.length ? n + '/' + data.length : '';
     }
+    function hue(s){ var x = 0; s = String(s); for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 360; return x; }
+    function featCount(p){ return Math.max(0, String(p.desc || '').split('\u2022').filter(function(x){ return x.indexOf('plugin_overlay.ini') < 0; }).length - 1); }
     function render(){
         if (!data.length) { list.innerHTML = '<div class="plg-empty">Плагинов нет</div>'; counter(); return; }
         list.innerHTML = data.map(function(p, i){
             var on = p.enabled && p.available;
+            var icon = p.icon ? esc(p.icon) : '\uD83E\uDDE9';
+            var src = p.remote === true ? '<span class="plg-src gh">GitHub</span>' : (p.remote === false ? '<span class="plg-src bi">Вшит</span>' : '');
+            var meta = [];
+            if (p.author) meta.push('<span>' + esc(p.author) + '</span>');
+            var fc = featCount(p); if (fc) meta.push('<span>' + fc + ' функц.</span>');
             return '<div class="setting-row plg-row' + (p.available ? '' : ' na') + '" data-i="' + i + '">' +
-                '<div class="setting-info"><div class="setting-name"><span class="ios-ico" style="--c:#30d158">\uD83E\uDDE9</span><span class="plg-name">' + esc(p.name) + '</span><span class="plg-ver">v' + esc(p.version) + '</span></div>' +
-                '<div class="setting-desc">' + esc(String(p['short'] || '').indexOf('plugin_overlay.ini') < 0 ? (p['short'] || '') : '') + '</div></div>' +
+                '<div class="plg-main"><div class="plg-ic" style="--h:' + hue(p.id) + '">' + icon + '</div>' +
+                '<div class="setting-info"><div class="setting-name plg-top"><span class="plg-name">' + esc(p.name) + '</span><span class="plg-ver">v' + esc(p.version) + '</span>' + src + '</div>' +
+                '<div class="setting-desc">' + esc(String(p['short'] || '').indexOf('plugin_overlay.ini') < 0 ? (p['short'] || '') : '') + '</div>' +
+                (meta.length ? '<div class="plg-meta">' + meta.join('') + '</div>' : '') + '</div></div>' +
                 '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span class="fx-badge ' + (on ? 'on' : 'off') + '">' + (p.available ? (on ? '\u0412\u041A\u041B' : '\u0412\u042B\u041A\u041B') : '\u041D\u0415 \u0412\u0428\u0418\u0422') + '</span>' +
                 '<label class="stg-toggle"><input type="checkbox" data-id="' + esc(p.id) + '"' + (on ? ' checked' : '') + (p.available ? '' : ' disabled') + '><div class="stg-track"></div></label></div></div>';
         }).join('');
@@ -3047,16 +3069,14 @@ body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 14px 14px; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
 .bld-card { display:flex; flex-direction:column; gap:9px; padding:10px; border-radius:16px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
 .bld-cover { width:100%; aspect-ratio:1/1; border-radius:11px; overflow:hidden; background:#000; }
-.bld-cover svg, .bld-cover img { width:100%; height:100%; display:block; }
-.bld-cover img { object-fit:cover; object-position:50% 50%; cursor:grab; user-select:none; -webkit-user-drag:none; touch-action:none; }
-.bld-cover img.is-panning { cursor:grabbing; }
+.bld-cover svg { width:100%; height:100%; display:block; }
 .bld-rate { align-self:flex-end; display:flex; align-items:center; gap:6px; padding:7px 13px; border-radius:10px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:600; color:#ffc928; }
 .bld-rate svg { width:16px; height:16px; fill:#ffc928; }
 .bld-name { margin:0 3px; font-size:17px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
 .bld-price { padding:12px; border-radius:11px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:700; color:#8e8e98; }
 .bld-buy { width:100%; min-height:38px; border:0; border-radius:11px; background:#f15b7a; color:#fff; font:600 13px 'Inter',sans-serif; cursor:pointer; }
 .bld-buy:disabled { background:#34343c; color:#9999a3; cursor:default; }
-body.pay-open #payBar { display:none !important; }
+body.pay-open #payBar { display:flex !important; }
 </style>
 <div id="bldBack"></div>
 <div id="bldPop" role="dialog" aria-label="Сборки">
@@ -3067,20 +3087,20 @@ body.pay-open #payBar { display:none !important; }
 </div>
 <script>
 (function(){
-    var body=document.body,btn=document.getElementById('bldBtn'),list=document.getElementById('bldList'),empty=document.getElementById('bldEmpty');
+    var body=document.body, btn=document.getElementById('bldBtn'), list=document.getElementById('bldList'), empty=document.getElementById('bldEmpty');
     function post(o){try{window.chrome.webview.postMessage(JSON.stringify(o))}catch(e){}}
     function open(v){body.classList.toggle('bld-open',v);btn.setAttribute('aria-expanded',v?'true':'false')}
     function render(builds){
         list.querySelectorAll('.bld-card').forEach(function(card){card.remove()});
-        if(!Array.isArray(builds)||!builds.length){empty.style.display='block';empty.textContent='Пока нет сборок';return}
+        if(!Array.isArray(builds)||!builds.length){builds=[{name:'Тестовая карточка',version:'Демо · проверка окна Boosty',boostyUrl:'https://boosty.to/',isDemo:true}]}
         empty.style.display='none';
         builds.forEach(function(build){
             var card=document.createElement('article');card.className='bld-card';
-            var imageUrl='';try{var image=new URL(build.imageUrl||'');if(image.protocol==='https:')imageUrl=image.href}catch(e){}if(imageUrl){var cover=document.createElement('div');cover.className='bld-cover';var img=document.createElement('img');img.src=imageUrl;img.alt=build.name||'Обложка сборки';img.loading='lazy';img.draggable=false;img.onerror=function(){cover.remove()};var panKey='buildImagePosition:'+String(build.id||build.name||imageUrl);try{var savedPan=JSON.parse(localStorage.getItem(panKey)||'null');if(savedPan&&Number.isFinite(savedPan.x)&&Number.isFinite(savedPan.y))img.style.objectPosition=savedPan.x+'% '+savedPan.y+'%'}catch(e){}var dragging=false,lastX=0,lastY=0,pan={x:50,y:50};try{var p=img.style.objectPosition.match(/([\d.]+)%\s+([\d.]+)%/);if(p)pan={x:Number(p[1]),y:Number(p[2])}}catch(e){}img.addEventListener('pointerdown',function(e){if(e.button!==0)return;dragging=true;lastX=e.clientX;lastY=e.clientY;img.classList.add('is-panning');try{img.setPointerCapture(e.pointerId)}catch(err){}e.preventDefault()});img.addEventListener('pointermove',function(e){if(!dragging)return;var rect=cover.getBoundingClientRect(),scale=Math.max(img.naturalWidth/rect.width,img.naturalHeight/rect.height);var overflowX=Math.max(0,img.naturalWidth/scale-rect.width),overflowY=Math.max(0,img.naturalHeight/scale-rect.height);if(overflowX)pan.x=Math.max(0,Math.min(100,pan.x-(e.clientX-lastX)/overflowX*100));if(overflowY)pan.y=Math.max(0,Math.min(100,pan.y-(e.clientY-lastY)/overflowY*100));lastX=e.clientX;lastY=e.clientY;img.style.objectPosition=pan.x+'% '+pan.y+'%';try{localStorage.setItem(panKey,JSON.stringify(pan))}catch(err){}});function stopPan(){dragging=false;img.classList.remove('is-panning')}img.addEventListener('pointerup',stopPan);img.addEventListener('pointercancel',stopPan);cover.appendChild(img);card.appendChild(cover)}var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
-            var price=document.createElement('p');price.className='bld-price';price.textContent=build.version||'Платная сборка';card.appendChild(price);
+            var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
+            var price=document.createElement('p');price.className='bld-price';price.textContent=build.version?'Версия '+build.version:'Платная сборка';card.appendChild(price);
             var buy=document.createElement('button');buy.type='button';buy.className='bld-buy';var url='';
             try{var u=new URL(build.boostyUrl||'');if(u.protocol==='https:'&&(u.hostname==='boosty.to'||u.hostname.endsWith('.boosty.to')))url=u.href}catch(e){}
-            buy.textContent=url?'Купить на Boosty':'Скоро';buy.disabled=!url;
+            buy.textContent=url?(build.isDemo?'Открыть Boosty (тест)':'Купить на Boosty'):'Скоро';buy.disabled=!url;
             if(url)buy.addEventListener('click',function(){window.openBoosty(url)});
             card.appendChild(buy);list.appendChild(card);
         });
@@ -3088,8 +3108,8 @@ body.pay-open #payBar { display:none !important; }
     btn.addEventListener('click',function(e){e.stopPropagation();var show=!body.classList.contains('bld-open');open(show);if(show)post({action:'getAvailableBuilds'})});
     document.getElementById('bldBack').addEventListener('click',function(){open(false)});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')open(false)});
-    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds);if(d&&d.action==='boostyClosed')body.classList.remove('pay-open')});
-    window.openBoosty=function(url){body.classList.remove('bld-open');btn.setAttribute('aria-expanded','false');body.classList.add('pay-open');post({action:'openBoosty',url:url})};
+    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds)});
+    window.openBoosty=function(url){body.classList.add('pay-open');post({action:'openBoosty',url:url})};
     function closePay(){body.classList.remove('pay-open');post({action:'closeBoosty'})}
     document.getElementById('payBack').onclick=function(){post({action:'boostyBack'})};
     document.getElementById('payClose').onclick=closePay;
