@@ -1,0 +1,13 @@
+[
+  {
+    "id": "refpoolfix",
+    "name": "RefPoolFix",
+    "short": "Фикс просадок FPS в толпе",
+    "desc": "Убирает просадки FPS в людных местах: игра больше не тратит до 30% кадра на пересчёт ссылок между объектами. • Пул ссылок расширяется, когда в нём не хватает места • Старые ссылки чистятся понемногу каждый кадр • До +40% FPS в толпе, чем больше народу, тем заметнее эффект • В пустых местах разницы нет • Логика игры не меняется",
+    "version": "1.0",
+    "file": "RefPoolFix.dll",
+    "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/refpoolfix_1.0.bin",
+    "sha256": "b9f0e9b35f722292e457937b425f20ea12a4d8f1a1cbba7c4fed49bd2f160ff2",
+    "icon": "⚡"
+  }
+]
