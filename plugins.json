@@ -2,34 +2,37 @@
   {
     "id": "refpoolfix",
     "name": "RefPoolFix",
-    "short": "Исправление вылетов из-за пула ссылок",
-    "desc": "Исправляет вылеты, связанные с переполнением пула ссылок игры. • Работает автоматически • Настроек нет",
+    "short": "Фикс вылетов из-за переполнения пула",
+    "desc": "Исправляет вылеты игры из-за переполнения внутренних пулов. • Стабильнее на больших серверах • Работает автоматически, без настроек",
     "version": "1.0",
     "file": "RefPoolFix.dll",
     "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/refpoolfix_1.0.bin",
     "sha256": "b9f0e9b35f722292e457937b425f20ea12a4d8f1a1cbba7c4fed49bd2f160ff2",
-    "icon": "🛠"
+    "icon": "🛠️",
+    "author": "NiteboiX"
   },
   {
-    "id": "fpsboost",
-    "name": "FPS Boost",
-    "short": "Больше FPS: свет, аксессуары, мыло",
-    "desc": "Повышает FPS, отключая тяжёлые эффекты. • Убрать свет: фары, короны и динамическое освещение • Убрать аксессуары у игроков рядом, радиус настраивается • Мыльная графика с пресетами и ручной настройкой • Клавиша меню меняется в настройках",
+    "id": "fpsbust",
+    "name": "FpsBust",
+    "short": "Больше FPS за счёт света и фар",
+    "desc": "Оптимизирует обработку освещения и фар. • Меньше нагрузка от фар и бликов • Прирост FPS в городе ночью • Работает автоматически",
     "version": "1.0",
-    "file": "FPSBoost.dll",
-    "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/fpsboost_1.0.bin",
+    "file": "FpsBust.dll",
+    "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/fpsbust_1.0.bin",
     "sha256": "be8774c6ea1b9e7ab8ed27dbfadbe25e87a276e1e5d45ce25e9b057b75420bea",
-    "icon": "⚡"
+    "icon": "🚀",
+    "author": "NiteboiX"
   },
   {
     "id": "overlay",
-    "name": "Оверлей",
-    "short": "Лимит FPS и клавиши на экране",
-    "desc": "Оверлей с панелью настроек на F10. • Ограничитель FPS с выбором лимита и отключением VSync • Показ нажатых клавиш и кнопок мыши на экране • 7 стилей клавиш и свой набор клавиш • Клавиша открытия панели настраивается",
+    "name": "Overlay",
+    "short": "Лимитер FPS и оверлей клавиш",
+    "desc": "Панель настроек по F10. • Ограничение FPS или без лимита • Счётчик FPS и вертикальная синхронизация • Оверлей нажатых клавиш",
     "version": "1.0",
     "file": "Overlay.dll",
     "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/overlay_1.0.bin",
     "sha256": "43fe8a3c9de00e24c9edc225b5764dd23e7e6283161b0bec58a61719be446c54",
-    "icon": "🎮"
+    "icon": "🎛️",
+    "author": "NiteboiX"
   }
 ]
