@@ -967,12 +967,6 @@ body.theme-macos.mj .settings-save-btn:hover { filter:brightness(1.08); border:n
 body.theme-macos.mj .settings-save-btn:active { transform:translateY(4px); box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 0 0 .5px #0050b0, 0 1px 0 #04529f, 0 8px 14px -4px rgba(10,132,255,.6); }
 
 /* ── Активация ── */
-#activationOverlay { background:rgba(0,0,0,.78) !important; backdrop-filter:blur(14px); }
-#activationOverlay > div { background:linear-gradient(180deg,#141418,#000) !important; border:none !important; border-radius:24px !important; box-shadow:0 0 0 .5px rgba(255,255,255,.14), inset 0 1px 0 rgba(255,255,255,.18), 0 30px 80px rgba(0,0,0,.9), 0 0 60px -14px var(--glow) !important; }
-#activationOverlay > div > div:first-child { text-transform:none !important; letter-spacing:-.2px !important; font-size:20px !important; font-weight:700 !important; color:#fff !important; }
-#activationOverlay > div > div:nth-child(2) { color:rgba(235,235,245,.6) !important; font-size:13px !important; }
-#activationCodeInput { height:50px; background:#000 !important; border:none !important; border-radius:14px !important; color:#fff !important; font-size:15px !important; box-shadow:inset 0 2px 7px rgba(0,0,0,.95), inset 0 0 0 .5px rgba(255,255,255,.12) !important; }
-#activationCodeInput:focus { outline:none; box-shadow:inset 0 2px 7px rgba(0,0,0,.95), inset 0 0 0 1.5px rgba(10,132,255,.85), 0 0 22px -4px rgba(10,132,255,.6) !important; }
 
 /* ═══════════════════════════════════════════════════════════
    FEED — новое с YouTube и Telegram (тема mj)
@@ -1418,16 +1412,6 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         </div>
     </div>
 
-    <!-- Activation gate: blocks the launcher until a valid code is entered -->
-    <div id="activationOverlay" style="display:none;position:fixed;left:0;right:0;bottom:0;top:36px;z-index:500;background:rgba(4,6,14,0.94);align-items:center;justify-content:center;">
-        <div style="width:360px;padding:28px;border-radius:14px;background:rgba(10,16,32,0.96);border:1px solid rgba(0,180,255,0.25);box-shadow:0 0 40px rgba(0,120,255,0.15);text-align:center;">
-            <div style="font-family:'Inter',sans-serif;font-weight:700;letter-spacing:3px;font-size:16px;color:#d0e8ff;margin-bottom:6px;text-transform:uppercase;">Активация лаунчера</div>
-            <div style="font-family:'Inter',sans-serif;font-size:12px;color:#7fa8d0;margin-bottom:16px;">Введите ваш уникальный код доступа</div>
-            <input id="activationCodeInput" type="text" placeholder="Код активации..." style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;background:rgba(6,10,22,0.9);border:1px solid rgba(0,180,255,0.2);color:#d0e8ff;font-family:'Inter',sans-serif;font-size:13px;letter-spacing:2px;text-align:center;">
-            <button id="activateCodeBtn" class="launch" style="width:100%;margin-top:12px;flex:none;">АКТИВИРОВАТЬ</button>
-            <div id="activationStatus" style="margin-top:10px;font-family:'Inter',sans-serif;font-size:12px;min-height:16px;"></div>
-        </div>
-    </div>
     <canvas id="partCanvas" style="position:fixed;inset:0;z-index:1;pointer-events:none"></canvas>
     <canvas id="starsCanvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;display:none"></canvas>
     <canvas id="lightningCanvas" style="position:fixed;inset:0;z-index:1;pointer-events:none;display:none"></canvas>
@@ -2395,23 +2379,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
     document.getElementById('closeBtn').onclick=function(){window.chrome.webview.postMessage(JSON.stringify({action:"close"}));};
     document.querySelector('.titlebar').addEventListener('mousedown',function(e){if(e.target.closest('.titlebar-buttons,.macos-traffic'))return;window.chrome.webview.postMessage(JSON.stringify({action:"dragWindow"}));});
 
-    // ── Activation gate ──
-    var activationOverlay = document.getElementById('activationOverlay');
-    var activationStatus = document.getElementById('activationStatus');
-    var activationCodeInput = document.getElementById('activationCodeInput');
-    function showActivationGate(){ activationOverlay.style.display='flex'; }
-    function hideActivationGate(){ activationOverlay.style.display='none'; }
-    function tryActivate(){
-        var code = activationCodeInput.value.trim();
-        if(!code){ activationStatus.textContent='Введите код!'; activationStatus.style.color='#ff5566'; return; }
-        var btn=document.getElementById('activateCodeBtn');
-        btn.disabled=true;
-        activationStatus.textContent='Проверка...'; activationStatus.style.color='#8fd9ff';
-        window.chrome.webview.postMessage(JSON.stringify({action:"activateCode",code:code}));
-    }
-    document.getElementById('activateCodeBtn').onclick=tryActivate;
-    activationCodeInput.addEventListener('keydown',function(e){ if(e.key==='Enter') tryActivate(); });
-    // Спрашиваем состояние активации сразу при загрузке интерфейса
+    // Heartbeat при старте (имя сообщения осталось старым ради совместимости с exe)
     window.chrome.webview.postMessage(JSON.stringify({action:"checkActivation"}));
 
     window.chrome.webview.addEventListener('message',function(event){
@@ -2422,25 +2390,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         }
         if(data.action==="unbanned") document.getElementById('banOverlay').style.display='none';
         if(data.action==="hotkeyInject"){
-            // не срабатывает, пока открыт экран активации (та же проверка, что была в старом keydown)
-            var overlay = document.getElementById('activationOverlay');
-            if(!(overlay && overlay.style.display !== 'none' && getComputedStyle(overlay).display !== 'none')){
-                triggerInjectNow();
-            }
-        }
-        if(data.action==="activationState"){
-            if(data.activated) hideActivationGate(); else showActivationGate();
-        }
-        if(data.action==="activationResult"){
-            document.getElementById('activateCodeBtn').disabled=false;
-            if(data.success){
-                activationStatus.style.color='#4dffb0';
-                activationStatus.textContent=data.message||'Активировано!';
-                setTimeout(hideActivationGate,600);
-            } else {
-                activationStatus.style.color='#ff5566';
-                activationStatus.textContent=data.message||'Неверный код';
-            }
+            triggerInjectNow();
         }
         if(data.action==="folderSelected"){
             selectedFolder=data.path;
