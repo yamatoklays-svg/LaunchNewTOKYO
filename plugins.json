@@ -8,7 +8,7 @@
     "file": "RefPoolFix.dll",
     "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/refpoolfix_1.0.bin",
     "sha256": "b9f0e9b35f722292e457937b425f20ea12a4d8f1a1cbba7c4fed49bd2f160ff2",
-    "icon": "🛠️",
+    "icon": "🛠",
     "author": "NiteboiX"
   },
   {
@@ -22,4 +22,17 @@
     "sha256": "be8774c6ea1b9e7ab8ed27dbfadbe25e87a276e1e5d45ce25e9b057b75420bea",
     "icon": "🚀",
     "author": "NiteboiX"
+  },
+  {
+    "id": "overlay",
+    "name": "Overlay",
+    "short": "Лимитер FPS и оверлей клавиш",
+    "desc": "Панель настроек по F10. • Ограничение FPS или без лимита • Счётчик FPS и вертикальная синхронизация • Оверлей нажатых клавиш",
+    "version": "1.0",
+    "file": "Overlay.dll",
+    "url": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/plugins/overlay_1.0.bin",
+    "sha256": "43fe8a3c9de00e24c9edc225b5764dd23e7e6283161b0bec58a61719be446c54",
+    "icon": "🎛",
+    "author": "NiteboiX"
   }
+]
