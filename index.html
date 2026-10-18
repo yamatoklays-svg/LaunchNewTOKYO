@@ -24,44 +24,7 @@
             --border2:rgba(100,160,255,0.18);
             --text:   #d8e8ff;
             --muted:  rgba(150,185,235,0.4);
-            --primary:#00d4ff;
-            --glow:0,200,255;
         }
-
-        /* ═══ Цветовые темы (вкладка «Интерфейс») ═══
-           Интерфейс построен на захардкоженных сине-голубых цветах, поэтому
-           тему делаем через hue-rotate на самом лаунчере (titlebar + wrapper).
-           Окно настроек НЕ трогаем — поэтому образцы цветов остаются «честными». */
-        .titlebar, .wrapper { transition: filter .3s ease; }
-        body[data-theme="tokyo"]  .titlebar, body[data-theme="tokyo"]  .wrapper { filter:none; }
-        body[data-theme="blue"]   .titlebar, body[data-theme="blue"]   .wrapper { filter:hue-rotate(-16deg) saturate(1.15); }
-        body[data-theme="red"]    .titlebar, body[data-theme="red"]    .wrapper { filter:hue-rotate(158deg) saturate(1.3); }
-        body[data-theme="green"]  .titlebar, body[data-theme="green"]  .wrapper { filter:hue-rotate(-78deg) saturate(1.12); }
-        body[data-theme="purple"] .titlebar, body[data-theme="purple"] .wrapper { filter:hue-rotate(78deg)  saturate(1.2); }
-        body[data-theme="black"]  .titlebar, body[data-theme="black"]  .wrapper { filter:saturate(0.08) brightness(1.05); }
-
-        /* ═══ Красивые ползунки / скроллбары ═══ */
-        ::-webkit-scrollbar { width:9px; height:9px; }
-        ::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); border-radius:12px; margin:3px; }
-        ::-webkit-scrollbar-thumb { border-radius:12px; border:2px solid transparent; background-clip:padding-box;
-            background-image:linear-gradient(180deg, var(--cyan), var(--blue)); box-shadow:0 0 8px rgba(var(--glow),0.35) inset; }
-        ::-webkit-scrollbar-thumb:hover { background-image:linear-gradient(180deg, var(--cyan), var(--green)); box-shadow:0 0 10px rgba(var(--glow),0.65); }
-        ::-webkit-scrollbar-thumb:active { background-image:linear-gradient(180deg, var(--green), var(--cyan)); }
-        ::-webkit-scrollbar-corner { background:transparent; }
-        .servers { scrollbar-width:thin; scrollbar-color:var(--cyan) transparent; }
-
-        /* ═══ Карточки выбора темы ═══ */
-        .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-        .theme-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px 8px 10px; cursor:pointer;
-            border:1px solid rgba(255,255,255,0.09); border-radius:16px; background:rgba(255,255,255,0.025); transition:transform .16s ease, border-color .16s ease, background .16s ease; -webkit-tap-highlight-color:transparent; }
-        .theme-card:hover { border-color:rgba(255,255,255,0.22); transform:translateY(-2px); background:rgba(255,255,255,0.05); }
-        .theme-card:active { transform:translateY(0) scale(0.97); }
-        .theme-sw { width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,var(--t1),var(--t2)); box-shadow:0 4px 14px -4px var(--t1), inset 0 0 0 2px rgba(255,255,255,0.12); }
-        .theme-nm { font-size:11px; font-weight:600; letter-spacing:0.3px; color:rgba(225,232,248,0.82); }
-        .theme-card.active { border-color:var(--t1); box-shadow:0 0 0 1px var(--t1) inset, 0 6px 18px -8px var(--t1); background:rgba(255,255,255,0.055); }
-        .theme-card.active .theme-sw { box-shadow:0 4px 16px -3px var(--t1), inset 0 0 0 2px #fff; }
-        .theme-card.active::after { content:'\2713'; position:absolute; top:7px; right:9px; font-size:11px; font-weight:800; color:var(--t1); }
-        .theme-hint { margin-top:12px; font-size:10px; letter-spacing:0.2px; color:rgba(160,170,200,0.55); text-align:center; }
 
         /* ═══ BASE ═══ */
         body { background: var(--bg); color: var(--text); font-family: 'Inter','Segoe UI',sans-serif; position: relative; border-radius: 18px; overflow: hidden; }
@@ -335,8 +298,8 @@
         body.no-glitch .setting-section-header .dot { animation: none !important; opacity: 0.7; }
 
         /* Titlebar */
-        .titlebar { position: relative; z-index: 10; height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 12px; background: rgba(4,6,14,0.95); border-bottom: 1px solid rgba(var(--glow),0.16); }
-        .titlebar::after { content: ''; position: absolute; bottom:-1px; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, rgba(var(--glow),0.5) 30%, rgba(0,220,160,0.3) 70%, transparent); }
+        .titlebar { position: relative; z-index: 10; height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 12px; background: rgba(4,6,14,0.95); border-bottom: 1px solid rgba(0,180,255,0.12); }
+        .titlebar::after { content: ''; position: absolute; bottom:-1px; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, rgba(0,180,255,0.5) 30%, rgba(0,220,160,0.3) 70%, transparent); }
         .titlebar-left { display:flex; align-items:center; gap:10px; }
         .titlebar-marker { display:none; }
         .titlebar-marker span { display:block; width:6px; height:6px; border-radius:2px; }
@@ -362,7 +325,7 @@
         /* Header */
         .header { text-align:center; position:relative; }
         .header-sub { font-family:'Noto Sans JP',sans-serif; font-size:9px; letter-spacing:5px; color:rgba(0,200,255,0.5); margin-bottom:2px; }
-        .header h1 { font-size:30px; font-weight:700; letter-spacing:8px; text-transform:uppercase; color:#fff; text-shadow:0 0 20px rgba(var(--glow),0.6),0 0 50px rgba(var(--glow),0.32),0 0 90px rgba(var(--glow),0.2); line-height:1; position:relative; }
+        .header h1 { font-size:30px; font-weight:700; letter-spacing:8px; text-transform:uppercase; color:#fff; text-shadow:0 0 20px rgba(0,200,255,0.6),0 0 50px rgba(0,120,255,0.3),0 0 90px rgba(0,60,180,0.2); line-height:1; position:relative; }
         .header h1::before { content:attr(data-text); position:absolute; left:0; right:0; top:0; clip-path:polygon(0 0,100% 0,100% 38%,0 38%); color:rgba(0,220,255,0.9); text-shadow:2px 0 0 rgba(255,0,80,0.3),-1px 0 0 rgba(0,255,200,0.3); animation:glitch1 8s infinite; }
         .header h1::after { content:attr(data-text); position:absolute; left:0; right:0; top:0; clip-path:polygon(0 62%,100% 62%,100% 100%,0 100%); color:rgba(255,200,0,0.06); animation:glitch2 8s infinite; }
         @keyframes glitch1 { 0%,90%,100%{transform:translate(0)} 92%{transform:translate(-2px,1px)} 94%{transform:translate(2px,-1px)} 96%{transform:translate(-1px,0)} }
@@ -372,7 +335,7 @@
         .header-line span { font-family:'Noto Sans JP',sans-serif; font-size:9px; color:var(--muted); letter-spacing:3px; }
 
         /* Section label */
-        .section-label { font-size:9px; font-weight:700; letter-spacing:3.5px; color:rgba(var(--glow),0.5); text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+        .section-label { font-size:9px; font-weight:700; letter-spacing:3.5px; color:rgba(0,180,255,0.45); text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
         .section-label::before { content:'//'; color:rgba(0,220,160,0.4); font-size:10px; letter-spacing:0; }
         .section-label::after  { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border2),transparent); }
         .section-label .jp { font-family:'Noto Sans JP',sans-serif; color:rgba(0,180,255,0.35); font-size:9px; font-weight:400; }
@@ -785,10 +748,13 @@ body.theme-macos.mj .header h1::before, body.theme-macos.mj .header h1::after { 
 /* ── Список серверов: OLED-чёрная 3D-группа ── */
 body.theme-macos.mj .servers { display:flex; flex-direction:column; gap:0; flex:1; min-height:0; perspective:none; overflow-y:auto; overscroll-behavior:contain; border-radius:18px; background:#000;
     box-shadow:0 0 0 .5px var(--hair), inset 0 1px 0 rgba(255,255,255,.10), inset 0 -1px 0 rgba(0,0,0,.9), 0 26px 50px -18px rgba(0,0,0,1), 0 8px 16px -4px rgba(0,0,0,.8);
-    scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.22) transparent; }
-body.theme-macos.mj .servers::-webkit-scrollbar { width:4px; }
-body.theme-macos.mj .servers::-webkit-scrollbar-thumb { background:rgba(255,255,255,.22); border-radius:4px; }
-body.theme-macos.mj .servers::-webkit-scrollbar-track { background:transparent; }
+    scrollbar-width:thin; scrollbar-color:#00c8ff transparent; }
+body.theme-macos.mj .servers::-webkit-scrollbar { width:9px; }
+body.theme-macos.mj .servers::-webkit-scrollbar-track { background:rgba(255,255,255,.04); border-radius:10px; margin:8px 2px; }
+body.theme-macos.mj .servers::-webkit-scrollbar-thumb { border-radius:10px; border:2px solid transparent; background-clip:padding-box;
+    background-image:linear-gradient(180deg,#00e0ff,#1e6bff); box-shadow:0 0 8px rgba(0,200,255,.45) inset; min-height:40px; transition:background-image .2s; }
+body.theme-macos.mj .servers::-webkit-scrollbar-thumb:hover { background-image:linear-gradient(180deg,#00e5a0,#00d4ff); box-shadow:0 0 10px rgba(0,229,160,.6); }
+body.theme-macos.mj .servers::-webkit-scrollbar-thumb:active { background-image:linear-gradient(180deg,#1e6bff,#00e0ff); }
 body.theme-macos.mj .server { position:relative; flex:0 0 auto; display:flex; flex-direction:row; align-items:center; gap:14px; min-height:60px; padding:9px 40px 9px 14px; text-align:left; overflow:visible; border:none; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; transition:background .18s; }
 body.theme-macos.mj .server:first-child { border-radius:18px 18px 0 0; }
 body.theme-macos.mj .server:last-child  { border-radius:0 0 18px 18px; }
@@ -1596,30 +1562,71 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
                     <!-- ═══ TAB: VISUALS ═══ -->
                     <div class="settings-page" id="page-visuals">
+                        <div class="setting-section" style="--sect-accent:rgba(255,150,0,0.35)">
+                            <div class="setting-section-header">
+                                <span class="dot" style="background:var(--orange);box-shadow:0 0 5px var(--orange)"></span>
+                                АНИМАЦИИ · アニメーション
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <div class="setting-name"><span class="ios-ico" style="--c:#bf5af2">🃏</span><span>3D-наклон</span></div>
+                                    <div class="setting-desc">Эффект наклона и всплытия при наведении на серверные карточки.</div>
+                                </div>
+                                <label class="stg-toggle"><input type="checkbox" id="hover3dToggle" checked><div class="stg-track"></div></label>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <div class="setting-name"><span class="ios-ico" style="--c:#ff9f0a">💫</span><span>Шлейф кнопок</span></div>
+                                    <div class="setting-desc">Анимация блика при наведении на кнопки запуска.</div>
+                                </div>
+                                <label class="stg-toggle"><input type="checkbox" id="sheenToggle" checked><div class="stg-track"></div></label>
+                            </div>
+                        </div>
                         <div class="setting-section" style="--sect-accent:rgba(0,180,255,0.4)">
                             <div class="setting-section-header">
                                 <span class="dot" style="background:var(--cyan);box-shadow:0 0 5px var(--cyan)"></span>
-                                ТЕМА · テーマ
+                                ФОНОВЫЕ ЭФФЕКТЫ · エフェクト
                             </div>
-                            <div class="theme-grid" id="themeGrid">
-                                <button type="button" class="theme-card" data-theme="tokyo"  style="--t1:#00d4ff;--t2:#1e6bff"><span class="theme-sw"></span><span class="theme-nm">Токио</span></button>
-                                <button type="button" class="theme-card" data-theme="red"    style="--t1:#ff3b5c;--t2:#ff2244"><span class="theme-sw"></span><span class="theme-nm">Красная</span></button>
-                                <button type="button" class="theme-card" data-theme="blue"   style="--t1:#2b8cff;--t2:#1e5bff"><span class="theme-sw"></span><span class="theme-nm">Синяя</span></button>
-                                <button type="button" class="theme-card" data-theme="green"  style="--t1:#00e58c;--t2:#00b36b"><span class="theme-sw"></span><span class="theme-nm">Зелёная</span></button>
-                                <button type="button" class="theme-card" data-theme="purple" style="--t1:#b06cff;--t2:#7a3bff"><span class="theme-sw"></span><span class="theme-nm">Фиолет</span></button>
-                                <button type="button" class="theme-card" data-theme="black"  style="--t1:#cfd4e4;--t2:#6a6f80"><span class="theme-sw"></span><span class="theme-nm">Чёрная</span></button>
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <div class="setting-name"><span class="ios-ico" style="--c:#64d2ff">✨</span><span>Частицы</span></div>
+                                    <div class="setting-desc">Светящиеся частицы, медленно поднимающиеся вверх.</div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="fx-badge off" id="partBadge">ВЫКЛ</span>
+                                    <label class="stg-toggle"><input type="checkbox" id="partToggle"><div class="stg-track"></div></label>
+                                </div>
                             </div>
-                            <div class="theme-hint">Цвет интерфейса меняется сразу. Выбор сохраняется между запусками.</div>
-                        </div>
-                        <!-- служебные переключатели эффектов скрыты, но оставлены, чтобы не ломать существующую логику -->
-                        <div style="display:none" aria-hidden="true">
-                            <input type="checkbox" id="hover3dToggle" checked>
-                            <input type="checkbox" id="sheenToggle" checked>
-                            <input type="checkbox" id="partToggle">
-                            <input type="checkbox" id="kanjiToggle">
-                            <input type="checkbox" id="starsToggle">
-                            <input type="checkbox" id="lightningToggle">
-                            <span id="partBadge"></span><span id="kanjiBadge"></span><span id="starsBadge"></span><span id="lightningBadge"></span>
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <div class="setting-name"><span class="ios-ico" style="--c:#ff453a">漢</span><span>Кандзи</span></div>
+                                    <div class="setting-desc">Полупрозрачные японские символы, парящие по краям экрана.</div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="fx-badge off" id="kanjiBadge">ВЫКЛ</span>
+                                    <label class="stg-toggle"><input type="checkbox" id="kanjiToggle"><div class="stg-track"></div></label>
+                                </div>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <div class="setting-name"><span class="ios-ico" style="--c:#5e5ce6">⭐</span><span>Звёздное небо</span></div>
+                                    <div class="setting-desc">Мерцающие звёзды на фоне — атмосфера ночного Токио.</div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="fx-badge off" id="starsBadge">ВЫКЛ</span>
+                                    <label class="stg-toggle"><input type="checkbox" id="starsToggle"><div class="stg-track"></div></label>
+                                </div>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-info">
+                                    <div class="setting-name"><span class="ios-ico" style="--c:#ffd60a">⚡</span><span>Молнии</span></div>
+                                    <div class="setting-desc">Случайные электрические разряды по краям экрана.</div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <span class="fx-badge off" id="lightningBadge">ВЫКЛ</span>
+                                    <label class="stg-toggle"><input type="checkbox" id="lightningToggle"><div class="stg-track"></div></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -2088,7 +2095,9 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
     }
     function renderServers(){
         var c=document.getElementById('servers');var _st=c.scrollTop;c.innerHTML='';
-        servers.slice().sort(function(a,b){ var af=favoriteServers.indexOf(a.name), bf=favoriteServers.indexOf(b.name); if(af<0&&bf<0)return 0; if(af<0)return 1; if(bf<0)return -1; return af-bf; }).forEach(function(srv,_si){
+        var _ordered=servers.slice().sort(function(a,b){ var af=favoriteServers.indexOf(a.name), bf=favoriteServers.indexOf(b.name); if(af<0&&bf<0)return 0; if(af<0)return 1; if(bf<0)return -1; return af-bf; });
+        var _loopOn = _ordered.length > 6; // список длинный -> включаем бесшовную петлю
+        (_loopOn ? [].concat(_ordered,_ordered,_ordered) : _ordered).forEach(function(srv,_si){
             var d=document.createElement('div');
             var isSoon=!!srv.comingSoon;
             var isFavorite=favoriteServers.indexOf(srv.name)>=0;
@@ -2131,6 +2140,21 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             c.appendChild(d);
         });
         c.scrollTop=_st;
+        if(_loopOn) requestAnimationFrame(function(){ _srvLoopSetup(c); });
+    }
+    // ── Бесконечная прокрутка списка серверов: 3 копии + бесшовный перескок ──
+    var _srvLoopBound=false, _srvOneH=0;
+    function _srvLoopSetup(c){
+        _srvOneH = c.scrollHeight/3;
+        if(_srvOneH<=0) return;
+        if(c.scrollTop < 1) c.scrollTop = _srvOneH; // старт со средней копии, чтобы крутить в обе стороны
+        if(_srvLoopBound) return;
+        _srvLoopBound=true;
+        c.addEventListener('scroll', function(){
+            if(!_srvOneH) return;
+            if(c.scrollTop < _srvOneH*0.5)      c.scrollTop += _srvOneH;
+            else if(c.scrollTop > _srvOneH*1.5) c.scrollTop -= _srvOneH;
+        }, {passive:true});
     }
     function renderNickList(){
         var c=document.getElementById('nickList');c.innerHTML='';
@@ -2377,23 +2401,6 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
     // Heartbeat при старте (имя сообщения осталось старым ради совместимости с exe)
     window.chrome.webview.postMessage(JSON.stringify({action:"checkActivation"}));
-
-    /* ══ ЦВЕТОВАЯ ТЕМА (вкладка «Интерфейс») ══ */
-    (function(){
-        var VALID=['tokyo','red','blue','green','purple','black'];
-        window.applyColorTheme=function(name){
-            if(VALID.indexOf(name)<0) name='tokyo';
-            document.body.setAttribute('data-theme',name);
-            document.querySelectorAll('.theme-card').forEach(function(c){ c.classList.toggle('active', c.dataset.theme===name); });
-            try{ localStorage.setItem('tokyoColorTheme',name); }catch(e){}
-        };
-        document.querySelectorAll('.theme-card').forEach(function(c){
-            c.addEventListener('click',function(){ window.applyColorTheme(this.dataset.theme); });
-        });
-        var saved='tokyo'; try{ saved=localStorage.getItem('tokyoColorTheme')||'tokyo'; }catch(e){}
-        window.applyColorTheme(saved);
-    })();
-
 
     window.chrome.webview.addEventListener('message',function(event){
         var data=typeof event.data==="string"?JSON.parse(event.data):event.data;
