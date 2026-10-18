@@ -24,7 +24,38 @@
             --border2:rgba(100,160,255,0.18);
             --text:   #d8e8ff;
             --muted:  rgba(150,185,235,0.4);
+            --primary:#00d4ff;
+            --glow:0,200,255;
         }
+
+        /* ═══ Цветовые темы (вкладка «Интерфейс») ═══ */
+        body[data-theme="tokyo"]  { }
+        body[data-theme="red"]    { --cyan:#ff3b5c; --blue:#ff2244; --green:#ff7a66; --primary:#ff3b5c; --glow:255,60,90; }
+        body[data-theme="blue"]   { --cyan:#2b8cff; --blue:#1e5bff; --green:#36c6ff; --primary:#2b8cff; --glow:43,140,255; }
+        body[data-theme="green"]  { --cyan:#00e58c; --blue:#00b36b; --green:#5bf0b0; --primary:#00e58c; --glow:0,229,140; }
+        body[data-theme="purple"] { --cyan:#b06cff; --blue:#7a3bff; --green:#d06cff; --primary:#b06cff; --glow:176,108,255; }
+        body[data-theme="black"]  { --cyan:#cfd4e4; --blue:#8a90a4; --green:#e8ecf5; --primary:#cfd4e4; --glow:200,205,225; }
+
+        /* ═══ Красивые ползунки / скроллбары ═══ */
+        ::-webkit-scrollbar { width:9px; height:9px; }
+        ::-webkit-scrollbar-track { background:rgba(255,255,255,0.03); border-radius:12px; margin:3px; }
+        ::-webkit-scrollbar-thumb { border-radius:12px; border:2px solid transparent; background-clip:padding-box;
+            background-image:linear-gradient(180deg, var(--cyan), var(--blue)); box-shadow:0 0 8px rgba(var(--glow),0.35) inset; }
+        ::-webkit-scrollbar-thumb:hover { background-image:linear-gradient(180deg, var(--cyan), var(--green)); box-shadow:0 0 10px rgba(var(--glow),0.65); }
+        ::-webkit-scrollbar-thumb:active { background-image:linear-gradient(180deg, var(--green), var(--cyan)); }
+        ::-webkit-scrollbar-corner { background:transparent; }
+        .servers { scrollbar-width:thin; scrollbar-color:var(--cyan) transparent; }
+
+        /* ═══ Карточки выбора темы ═══ */
+        .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+        .theme-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:7px; padding:12px 6px 9px; cursor:pointer;
+            border:1px solid rgba(255,255,255,0.08); border-radius:14px; background:rgba(255,255,255,0.02); transition:transform .18s, border-color .18s, background .18s; }
+        .theme-card:hover { border-color:rgba(255,255,255,0.22); transform:translateY(-2px); background:rgba(255,255,255,0.045); }
+        .theme-sw { width:100%; height:30px; border-radius:9px; background:linear-gradient(135deg,var(--t1),var(--t2)); box-shadow:0 0 14px -2px var(--t1); }
+        .theme-nm { font-size:10px; font-weight:700; letter-spacing:1px; color:rgba(220,230,250,0.75); text-transform:uppercase; }
+        .theme-card.active { border-color:var(--t1); box-shadow:0 0 0 1px var(--t1) inset, 0 0 16px -4px var(--t1); background:rgba(255,255,255,0.05); }
+        .theme-card.active::after { content:'\2713'; position:absolute; top:5px; right:8px; font-size:10px; font-weight:700; color:var(--t1); }
+        .theme-hint { margin-top:10px; font-size:9px; letter-spacing:0.4px; color:rgba(150,160,190,0.5); text-align:center; }
 
         /* ═══ BASE ═══ */
         body { background: var(--bg); color: var(--text); font-family: 'Inter','Segoe UI',sans-serif; position: relative; border-radius: 18px; overflow: hidden; }
@@ -298,8 +329,8 @@
         body.no-glitch .setting-section-header .dot { animation: none !important; opacity: 0.7; }
 
         /* Titlebar */
-        .titlebar { position: relative; z-index: 10; height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 12px; background: rgba(4,6,14,0.95); border-bottom: 1px solid rgba(0,180,255,0.12); }
-        .titlebar::after { content: ''; position: absolute; bottom:-1px; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, rgba(0,180,255,0.5) 30%, rgba(0,220,160,0.3) 70%, transparent); }
+        .titlebar { position: relative; z-index: 10; height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px 0 12px; background: rgba(4,6,14,0.95); border-bottom: 1px solid rgba(var(--glow),0.16); }
+        .titlebar::after { content: ''; position: absolute; bottom:-1px; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, rgba(var(--glow),0.5) 30%, rgba(0,220,160,0.3) 70%, transparent); }
         .titlebar-left { display:flex; align-items:center; gap:10px; }
         .titlebar-marker { display:none; }
         .titlebar-marker span { display:block; width:6px; height:6px; border-radius:2px; }
@@ -325,7 +356,7 @@
         /* Header */
         .header { text-align:center; position:relative; }
         .header-sub { font-family:'Noto Sans JP',sans-serif; font-size:9px; letter-spacing:5px; color:rgba(0,200,255,0.5); margin-bottom:2px; }
-        .header h1 { font-size:30px; font-weight:700; letter-spacing:8px; text-transform:uppercase; color:#fff; text-shadow:0 0 20px rgba(0,200,255,0.6),0 0 50px rgba(0,120,255,0.3),0 0 90px rgba(0,60,180,0.2); line-height:1; position:relative; }
+        .header h1 { font-size:30px; font-weight:700; letter-spacing:8px; text-transform:uppercase; color:#fff; text-shadow:0 0 20px rgba(var(--glow),0.6),0 0 50px rgba(var(--glow),0.32),0 0 90px rgba(var(--glow),0.2); line-height:1; position:relative; }
         .header h1::before { content:attr(data-text); position:absolute; left:0; right:0; top:0; clip-path:polygon(0 0,100% 0,100% 38%,0 38%); color:rgba(0,220,255,0.9); text-shadow:2px 0 0 rgba(255,0,80,0.3),-1px 0 0 rgba(0,255,200,0.3); animation:glitch1 8s infinite; }
         .header h1::after { content:attr(data-text); position:absolute; left:0; right:0; top:0; clip-path:polygon(0 62%,100% 62%,100% 100%,0 100%); color:rgba(255,200,0,0.06); animation:glitch2 8s infinite; }
         @keyframes glitch1 { 0%,90%,100%{transform:translate(0)} 92%{transform:translate(-2px,1px)} 94%{transform:translate(2px,-1px)} 96%{transform:translate(-1px,0)} }
@@ -335,7 +366,7 @@
         .header-line span { font-family:'Noto Sans JP',sans-serif; font-size:9px; color:var(--muted); letter-spacing:3px; }
 
         /* Section label */
-        .section-label { font-size:9px; font-weight:700; letter-spacing:3.5px; color:rgba(0,180,255,0.45); text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+        .section-label { font-size:9px; font-weight:700; letter-spacing:3.5px; color:rgba(var(--glow),0.5); text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
         .section-label::before { content:'//'; color:rgba(0,220,160,0.4); font-size:10px; letter-spacing:0; }
         .section-label::after  { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border2),transparent); }
         .section-label .jp { font-family:'Noto Sans JP',sans-serif; color:rgba(0,180,255,0.35); font-size:9px; font-weight:400; }
@@ -1559,71 +1590,30 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
                     <!-- ═══ TAB: VISUALS ═══ -->
                     <div class="settings-page" id="page-visuals">
-                        <div class="setting-section" style="--sect-accent:rgba(255,150,0,0.35)">
-                            <div class="setting-section-header">
-                                <span class="dot" style="background:var(--orange);box-shadow:0 0 5px var(--orange)"></span>
-                                АНИМАЦИИ · アニメーション
-                            </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <div class="setting-name"><span class="ios-ico" style="--c:#bf5af2">🃏</span><span>3D-наклон</span></div>
-                                    <div class="setting-desc">Эффект наклона и всплытия при наведении на серверные карточки.</div>
-                                </div>
-                                <label class="stg-toggle"><input type="checkbox" id="hover3dToggle" checked><div class="stg-track"></div></label>
-                            </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <div class="setting-name"><span class="ios-ico" style="--c:#ff9f0a">💫</span><span>Шлейф кнопок</span></div>
-                                    <div class="setting-desc">Анимация блика при наведении на кнопки запуска.</div>
-                                </div>
-                                <label class="stg-toggle"><input type="checkbox" id="sheenToggle" checked><div class="stg-track"></div></label>
-                            </div>
-                        </div>
                         <div class="setting-section" style="--sect-accent:rgba(0,180,255,0.4)">
                             <div class="setting-section-header">
                                 <span class="dot" style="background:var(--cyan);box-shadow:0 0 5px var(--cyan)"></span>
-                                ФОНОВЫЕ ЭФФЕКТЫ · エフェクト
+                                ТЕМА · テーマ
                             </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <div class="setting-name"><span class="ios-ico" style="--c:#64d2ff">✨</span><span>Частицы</span></div>
-                                    <div class="setting-desc">Светящиеся частицы, медленно поднимающиеся вверх.</div>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span class="fx-badge off" id="partBadge">ВЫКЛ</span>
-                                    <label class="stg-toggle"><input type="checkbox" id="partToggle"><div class="stg-track"></div></label>
-                                </div>
+                            <div class="theme-grid" id="themeGrid">
+                                <button type="button" class="theme-card" data-theme="tokyo"  style="--t1:#00d4ff;--t2:#1e6bff"><span class="theme-sw"></span><span class="theme-nm">Токио</span></button>
+                                <button type="button" class="theme-card" data-theme="red"    style="--t1:#ff3b5c;--t2:#ff2244"><span class="theme-sw"></span><span class="theme-nm">Красная</span></button>
+                                <button type="button" class="theme-card" data-theme="blue"   style="--t1:#2b8cff;--t2:#1e5bff"><span class="theme-sw"></span><span class="theme-nm">Синяя</span></button>
+                                <button type="button" class="theme-card" data-theme="green"  style="--t1:#00e58c;--t2:#00b36b"><span class="theme-sw"></span><span class="theme-nm">Зелёная</span></button>
+                                <button type="button" class="theme-card" data-theme="purple" style="--t1:#b06cff;--t2:#7a3bff"><span class="theme-sw"></span><span class="theme-nm">Фиолет</span></button>
+                                <button type="button" class="theme-card" data-theme="black"  style="--t1:#cfd4e4;--t2:#6a6f80"><span class="theme-sw"></span><span class="theme-nm">Чёрная</span></button>
                             </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <div class="setting-name"><span class="ios-ico" style="--c:#ff453a">漢</span><span>Кандзи</span></div>
-                                    <div class="setting-desc">Полупрозрачные японские символы, парящие по краям экрана.</div>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span class="fx-badge off" id="kanjiBadge">ВЫКЛ</span>
-                                    <label class="stg-toggle"><input type="checkbox" id="kanjiToggle"><div class="stg-track"></div></label>
-                                </div>
-                            </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <div class="setting-name"><span class="ios-ico" style="--c:#5e5ce6">⭐</span><span>Звёздное небо</span></div>
-                                    <div class="setting-desc">Мерцающие звёзды на фоне — атмосфера ночного Токио.</div>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span class="fx-badge off" id="starsBadge">ВЫКЛ</span>
-                                    <label class="stg-toggle"><input type="checkbox" id="starsToggle"><div class="stg-track"></div></label>
-                                </div>
-                            </div>
-                            <div class="setting-row">
-                                <div class="setting-info">
-                                    <div class="setting-name"><span class="ios-ico" style="--c:#ffd60a">⚡</span><span>Молнии</span></div>
-                                    <div class="setting-desc">Случайные электрические разряды по краям экрана.</div>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px">
-                                    <span class="fx-badge off" id="lightningBadge">ВЫКЛ</span>
-                                    <label class="stg-toggle"><input type="checkbox" id="lightningToggle"><div class="stg-track"></div></label>
-                                </div>
-                            </div>
+                            <div class="theme-hint">Цвет интерфейса меняется сразу. Выбор сохраняется между запусками.</div>
+                        </div>
+                        <!-- служебные переключатели эффектов скрыты, но оставлены, чтобы не ломать существующую логику -->
+                        <div style="display:none" aria-hidden="true">
+                            <input type="checkbox" id="hover3dToggle" checked>
+                            <input type="checkbox" id="sheenToggle" checked>
+                            <input type="checkbox" id="partToggle">
+                            <input type="checkbox" id="kanjiToggle">
+                            <input type="checkbox" id="starsToggle">
+                            <input type="checkbox" id="lightningToggle">
+                            <span id="partBadge"></span><span id="kanjiBadge"></span><span id="starsBadge"></span><span id="lightningBadge"></span>
                         </div>
                     </div>
 
@@ -1663,6 +1653,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         </div>
         <div class="titlebar-buttons">
             <button class="bld-btn" id="bldBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Сборки"><span>Сборки</span></button>
+            <button id="shotBtn" title="Скриншот лаунчера (PrtScr)" aria-label="Скриншот" type="button">📷</button>
             <button class="gear-btn" id="gearBtn" title="Настройки" aria-label="Настройки" type="button">⚙</button>
             <button id="minBtn" title="Свернуть" aria-label="Свернуть" type="button">─</button>
             <button id="closeBtn" class="close" title="Закрыть" aria-label="Закрыть" type="button">✕</button>
@@ -2381,6 +2372,38 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
     // Heartbeat при старте (имя сообщения осталось старым ради совместимости с exe)
     window.chrome.webview.postMessage(JSON.stringify({action:"checkActivation"}));
+
+    /* ══ ЦВЕТОВАЯ ТЕМА (вкладка «Интерфейс») ══ */
+    (function(){
+        var VALID=['tokyo','red','blue','green','purple','black'];
+        window.applyColorTheme=function(name){
+            if(VALID.indexOf(name)<0) name='tokyo';
+            document.body.setAttribute('data-theme',name);
+            document.querySelectorAll('.theme-card').forEach(function(c){ c.classList.toggle('active', c.dataset.theme===name); });
+            try{ localStorage.setItem('tokyoColorTheme',name); }catch(e){}
+        };
+        document.querySelectorAll('.theme-card').forEach(function(c){
+            c.addEventListener('click',function(){ window.applyColorTheme(this.dataset.theme); });
+        });
+        var saved='tokyo'; try{ saved=localStorage.getItem('tokyoColorTheme')||'tokyo'; }catch(e){}
+        window.applyColorTheme(saved);
+    })();
+
+    /* ══ СКРИНШОТ ЛАУНЧЕРА (через C++ CapturePreview) ══ */
+    (function(){
+        var shotBtn=document.getElementById('shotBtn');
+        function shot(){ try{ setStatus('Скриншот…',''); }catch(e){} try{ window.chrome.webview.postMessage(JSON.stringify({action:'screenshot'})); }catch(e){} }
+        if(shotBtn) shotBtn.onclick=shot;
+        document.addEventListener('keydown',function(e){
+            if(e.key==='PrintScreen'||e.code==='PrintScreen'){ e.preventDefault(); shot(); }
+        });
+        window.chrome.webview.addEventListener('message',function(ev){
+            var d=ev.data; if(typeof d==='string'){ try{ d=JSON.parse(d); }catch(e){ return; } }
+            if(d&&d.action==='screenshotResult'){
+                try{ setStatus(d.success?('Скриншот сохранён: '+(d.path||'')):'Не удалось сделать скриншот', d.success?'success':'error'); }catch(e){}
+            }
+        });
+    })();
 
     window.chrome.webview.addEventListener('message',function(event){
         var data=typeof event.data==="string"?JSON.parse(event.data):event.data;
