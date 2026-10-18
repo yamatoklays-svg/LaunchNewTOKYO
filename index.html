@@ -28,13 +28,17 @@
             --glow:0,200,255;
         }
 
-        /* ═══ Цветовые темы (вкладка «Интерфейс») ═══ */
-        body[data-theme="tokyo"]  { }
-        body[data-theme="red"]    { --cyan:#ff3b5c; --blue:#ff2244; --green:#ff7a66; --primary:#ff3b5c; --glow:255,60,90; }
-        body[data-theme="blue"]   { --cyan:#2b8cff; --blue:#1e5bff; --green:#36c6ff; --primary:#2b8cff; --glow:43,140,255; }
-        body[data-theme="green"]  { --cyan:#00e58c; --blue:#00b36b; --green:#5bf0b0; --primary:#00e58c; --glow:0,229,140; }
-        body[data-theme="purple"] { --cyan:#b06cff; --blue:#7a3bff; --green:#d06cff; --primary:#b06cff; --glow:176,108,255; }
-        body[data-theme="black"]  { --cyan:#cfd4e4; --blue:#8a90a4; --green:#e8ecf5; --primary:#cfd4e4; --glow:200,205,225; }
+        /* ═══ Цветовые темы (вкладка «Интерфейс») ═══
+           Интерфейс построен на захардкоженных сине-голубых цветах, поэтому
+           тему делаем через hue-rotate на самом лаунчере (titlebar + wrapper).
+           Окно настроек НЕ трогаем — поэтому образцы цветов остаются «честными». */
+        .titlebar, .wrapper { transition: filter .3s ease; }
+        body[data-theme="tokyo"]  .titlebar, body[data-theme="tokyo"]  .wrapper { filter:none; }
+        body[data-theme="blue"]   .titlebar, body[data-theme="blue"]   .wrapper { filter:hue-rotate(-16deg) saturate(1.15); }
+        body[data-theme="red"]    .titlebar, body[data-theme="red"]    .wrapper { filter:hue-rotate(158deg) saturate(1.3); }
+        body[data-theme="green"]  .titlebar, body[data-theme="green"]  .wrapper { filter:hue-rotate(-78deg) saturate(1.12); }
+        body[data-theme="purple"] .titlebar, body[data-theme="purple"] .wrapper { filter:hue-rotate(78deg)  saturate(1.2); }
+        body[data-theme="black"]  .titlebar, body[data-theme="black"]  .wrapper { filter:saturate(0.08) brightness(1.05); }
 
         /* ═══ Красивые ползунки / скроллбары ═══ */
         ::-webkit-scrollbar { width:9px; height:9px; }
@@ -47,15 +51,17 @@
         .servers { scrollbar-width:thin; scrollbar-color:var(--cyan) transparent; }
 
         /* ═══ Карточки выбора темы ═══ */
-        .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
-        .theme-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:7px; padding:12px 6px 9px; cursor:pointer;
-            border:1px solid rgba(255,255,255,0.08); border-radius:14px; background:rgba(255,255,255,0.02); transition:transform .18s, border-color .18s, background .18s; }
-        .theme-card:hover { border-color:rgba(255,255,255,0.22); transform:translateY(-2px); background:rgba(255,255,255,0.045); }
-        .theme-sw { width:100%; height:30px; border-radius:9px; background:linear-gradient(135deg,var(--t1),var(--t2)); box-shadow:0 0 14px -2px var(--t1); }
-        .theme-nm { font-size:10px; font-weight:700; letter-spacing:1px; color:rgba(220,230,250,0.75); text-transform:uppercase; }
-        .theme-card.active { border-color:var(--t1); box-shadow:0 0 0 1px var(--t1) inset, 0 0 16px -4px var(--t1); background:rgba(255,255,255,0.05); }
-        .theme-card.active::after { content:'\2713'; position:absolute; top:5px; right:8px; font-size:10px; font-weight:700; color:var(--t1); }
-        .theme-hint { margin-top:10px; font-size:9px; letter-spacing:0.4px; color:rgba(150,160,190,0.5); text-align:center; }
+        .theme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .theme-card { position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px 8px 10px; cursor:pointer;
+            border:1px solid rgba(255,255,255,0.09); border-radius:16px; background:rgba(255,255,255,0.025); transition:transform .16s ease, border-color .16s ease, background .16s ease; -webkit-tap-highlight-color:transparent; }
+        .theme-card:hover { border-color:rgba(255,255,255,0.22); transform:translateY(-2px); background:rgba(255,255,255,0.05); }
+        .theme-card:active { transform:translateY(0) scale(0.97); }
+        .theme-sw { width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,var(--t1),var(--t2)); box-shadow:0 4px 14px -4px var(--t1), inset 0 0 0 2px rgba(255,255,255,0.12); }
+        .theme-nm { font-size:11px; font-weight:600; letter-spacing:0.3px; color:rgba(225,232,248,0.82); }
+        .theme-card.active { border-color:var(--t1); box-shadow:0 0 0 1px var(--t1) inset, 0 6px 18px -8px var(--t1); background:rgba(255,255,255,0.055); }
+        .theme-card.active .theme-sw { box-shadow:0 4px 16px -3px var(--t1), inset 0 0 0 2px #fff; }
+        .theme-card.active::after { content:'\2713'; position:absolute; top:7px; right:9px; font-size:11px; font-weight:800; color:var(--t1); }
+        .theme-hint { margin-top:12px; font-size:10px; letter-spacing:0.2px; color:rgba(160,170,200,0.55); text-align:center; }
 
         /* ═══ BASE ═══ */
         body { background: var(--bg); color: var(--text); font-family: 'Inter','Segoe UI',sans-serif; position: relative; border-radius: 18px; overflow: hidden; }
@@ -1653,7 +1659,6 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         </div>
         <div class="titlebar-buttons">
             <button class="bld-btn" id="bldBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Сборки"><span>Сборки</span></button>
-            <button id="shotBtn" title="Скриншот лаунчера (PrtScr)" aria-label="Скриншот" type="button">📷</button>
             <button class="gear-btn" id="gearBtn" title="Настройки" aria-label="Настройки" type="button">⚙</button>
             <button id="minBtn" title="Свернуть" aria-label="Свернуть" type="button">─</button>
             <button id="closeBtn" class="close" title="Закрыть" aria-label="Закрыть" type="button">✕</button>
@@ -2389,21 +2394,6 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         window.applyColorTheme(saved);
     })();
 
-    /* ══ СКРИНШОТ ЛАУНЧЕРА (через C++ CapturePreview) ══ */
-    (function(){
-        var shotBtn=document.getElementById('shotBtn');
-        function shot(){ try{ setStatus('Скриншот…',''); }catch(e){} try{ window.chrome.webview.postMessage(JSON.stringify({action:'screenshot'})); }catch(e){} }
-        if(shotBtn) shotBtn.onclick=shot;
-        document.addEventListener('keydown',function(e){
-            if(e.key==='PrintScreen'||e.code==='PrintScreen'){ e.preventDefault(); shot(); }
-        });
-        window.chrome.webview.addEventListener('message',function(ev){
-            var d=ev.data; if(typeof d==='string'){ try{ d=JSON.parse(d); }catch(e){ return; } }
-            if(d&&d.action==='screenshotResult'){
-                try{ setStatus(d.success?('Скриншот сохранён: '+(d.path||'')):'Не удалось сделать скриншот', d.success?'success':'error'); }catch(e){}
-            }
-        });
-    })();
 
     window.chrome.webview.addEventListener('message',function(event){
         var data=typeof event.data==="string"?JSON.parse(event.data):event.data;
