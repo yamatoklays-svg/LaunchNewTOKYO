@@ -748,13 +748,11 @@ body.theme-macos.mj .header h1::before, body.theme-macos.mj .header h1::after { 
 /* ── Список серверов: OLED-чёрная 3D-группа ── */
 body.theme-macos.mj .servers { display:flex; flex-direction:column; gap:0; flex:1; min-height:0; perspective:none; overflow-y:auto; overscroll-behavior:contain; border-radius:18px; background:#000;
     box-shadow:0 0 0 .5px var(--hair), inset 0 1px 0 rgba(255,255,255,.10), inset 0 -1px 0 rgba(0,0,0,.9), 0 26px 50px -18px rgba(0,0,0,1), 0 8px 16px -4px rgba(0,0,0,.8);
-    scrollbar-width:thin; scrollbar-color:#00c8ff transparent; }
-body.theme-macos.mj .servers::-webkit-scrollbar { width:9px; }
-body.theme-macos.mj .servers::-webkit-scrollbar-track { background:rgba(255,255,255,.04); border-radius:10px; margin:8px 2px; }
-body.theme-macos.mj .servers::-webkit-scrollbar-thumb { border-radius:10px; border:2px solid transparent; background-clip:padding-box;
-    background-image:linear-gradient(180deg,#00e0ff,#1e6bff); box-shadow:0 0 8px rgba(0,200,255,.45) inset; min-height:40px; transition:background-image .2s; }
-body.theme-macos.mj .servers::-webkit-scrollbar-thumb:hover { background-image:linear-gradient(180deg,#00e5a0,#00d4ff); box-shadow:0 0 10px rgba(0,229,160,.6); }
-body.theme-macos.mj .servers::-webkit-scrollbar-thumb:active { background-image:linear-gradient(180deg,#1e6bff,#00e0ff); }
+    scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.28) transparent; }
+body.theme-macos.mj .servers::-webkit-scrollbar { width:8px; }
+body.theme-macos.mj .servers::-webkit-scrollbar-track { background:transparent; margin:8px 0; }
+body.theme-macos.mj .servers::-webkit-scrollbar-thumb { border-radius:8px; border:2px solid transparent; background-clip:padding-box; background-color:rgba(255,255,255,.22); transition:background-color .2s; }
+body.theme-macos.mj .servers::-webkit-scrollbar-thumb:hover { background-color:rgba(255,255,255,.42); }
 body.theme-macos.mj .server { position:relative; flex:0 0 auto; display:flex; flex-direction:row; align-items:center; gap:14px; min-height:60px; padding:9px 40px 9px 14px; text-align:left; overflow:visible; border:none; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; transition:background .18s; }
 body.theme-macos.mj .server:first-child { border-radius:18px 18px 0 0; }
 body.theme-macos.mj .server:last-child  { border-radius:0 0 18px 18px; }
@@ -2095,9 +2093,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
     }
     function renderServers(){
         var c=document.getElementById('servers');var _st=c.scrollTop;c.innerHTML='';
-        var _ordered=servers.slice().sort(function(a,b){ var af=favoriteServers.indexOf(a.name), bf=favoriteServers.indexOf(b.name); if(af<0&&bf<0)return 0; if(af<0)return 1; if(bf<0)return -1; return af-bf; });
-        var _loopOn = _ordered.length > 6; // список длинный -> включаем бесшовную петлю
-        (_loopOn ? [].concat(_ordered,_ordered,_ordered) : _ordered).forEach(function(srv,_si){
+        servers.slice().sort(function(a,b){ var af=favoriteServers.indexOf(a.name), bf=favoriteServers.indexOf(b.name); if(af<0&&bf<0)return 0; if(af<0)return 1; if(bf<0)return -1; return af-bf; }).forEach(function(srv,_si){
             var d=document.createElement('div');
             var isSoon=!!srv.comingSoon;
             var isFavorite=favoriteServers.indexOf(srv.name)>=0;
@@ -2140,21 +2136,6 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             c.appendChild(d);
         });
         c.scrollTop=_st;
-        if(_loopOn) requestAnimationFrame(function(){ _srvLoopSetup(c); });
-    }
-    // ── Бесконечная прокрутка списка серверов: 3 копии + бесшовный перескок ──
-    var _srvLoopBound=false, _srvOneH=0;
-    function _srvLoopSetup(c){
-        _srvOneH = c.scrollHeight/3;
-        if(_srvOneH<=0) return;
-        if(c.scrollTop < 1) c.scrollTop = _srvOneH; // старт со средней копии, чтобы крутить в обе стороны
-        if(_srvLoopBound) return;
-        _srvLoopBound=true;
-        c.addEventListener('scroll', function(){
-            if(!_srvOneH) return;
-            if(c.scrollTop < _srvOneH*0.5)      c.scrollTop += _srvOneH;
-            else if(c.scrollTop > _srvOneH*1.5) c.scrollTop -= _srvOneH;
-        }, {passive:true});
     }
     function renderNickList(){
         var c=document.getElementById('nickList');c.innerHTML='';
