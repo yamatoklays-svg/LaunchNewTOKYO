@@ -2016,6 +2016,35 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         t.addEventListener('click', function(){ activateTab(this.dataset.tab); });
     });
 
+    /* ══ Сквозная бесконечная прокрутка по разделам (Игра → Интерфейс → Плагины → по кругу) ══ */
+    (function(){
+        var ORDER=['game','visuals','plugins'];
+        var sc=document.querySelector('.settings-scroll');
+        if(!sc) return;
+        function curIdx(){
+            var a=document.querySelector('.settings-page.active');
+            var n=a?a.id.replace('page-',''):'game';
+            var i=ORDER.indexOf(n); return i<0?0:i;
+        }
+        var lock=0;
+        function go(dir){
+            var i=(curIdx()+dir+ORDER.length)%ORDER.length;
+            var t=document.querySelector('.settings-tab-mac[data-tab="'+ORDER[i]+'"]')
+               || document.querySelector('.settings-tab[data-tab="'+ORDER[i]+'"]');
+            if(t) t.click(); else activateTab(ORDER[i]);
+            requestAnimationFrame(function(){
+                sc.scrollTop = dir>0 ? 0 : Math.max(0, sc.scrollHeight - sc.clientHeight);
+            });
+        }
+        sc.addEventListener('wheel', function(e){
+            var now=Date.now();
+            var atTop = sc.scrollTop <= 0;
+            var atBot = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1;
+            if(e.deltaY>0 && atBot){ e.preventDefault(); if(now<lock) return; lock=now+480; go(1); }
+            else if(e.deltaY<0 && atTop){ e.preventDefault(); if(now<lock) return; lock=now+480; go(-1); }
+        }, {passive:false});
+    })();
+
     function syncTabs(){
         var activePage = document.querySelector('.settings-page.active');
         if(activePage){
