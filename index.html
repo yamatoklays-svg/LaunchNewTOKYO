@@ -1694,11 +1694,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         </div>
     </div>
 
-    <div id="payBar" style="position:fixed;left:0;right:0;top:40px;height:44px;z-index:95;display:none;align-items:center;gap:10px;padding:0 14px;background:#0f0f12;border-bottom:1px solid rgba(255,255,255,.08);color:#f4f4f5;font:600 13px 'Inter',sans-serif">
-        <button id="payBack" type="button" style="height:30px;padding:0 14px;border:0;border-radius:8px;background:#26262c;color:#fff;cursor:pointer">← Назад</button>
-        <span style="flex:1">Boosty · вход и оплата</span>
-        <button id="payClose" type="button" style="height:30px;padding:0 14px;border:0;border-radius:8px;background:#26262c;color:#fff;cursor:pointer">✕ Закрыть</button>
-    </div>
+    
     <div class="wrapper">
         <div class="header">
             <div class="header-sub">アメイジングオンライン · LAUNCHER · 最強</div>
@@ -2085,7 +2081,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
         {name:"X",     icon:"✕",ip:"80.66.82.185",port:7777,color:"#ff9900",dimColor:"rgba(255,153,0,0.12)"},
         {name:"FIRE",  icon:"▲",ip:"80.66.82.163",port:7777,color:"#ff4411",dimColor:"rgba(255,68,17,0.12)"},
         {name:"LIME",  icon:"✳",ip:"80.66.82.189",port:7777,color:"#aaff00",dimColor:"rgba(170,255,0,0.1)"},
-        {name:"???",   icon:"…",ip:"",            port:0,   color:"#ff2244",dimColor:"rgba(255,255,255,0.08)",comingSoon:true}
+        {name:"NIGHT", icon:"☾",ip:"80.66.82.143",port:7777,color:"#5b6cff",dimColor:"rgba(91,108,255,0.12)"}
     ];
     var selectedServer=servers[0],selectedFolder="",serverNicks={},selectedProcess="amazing";
     var comingSoonRevealed=false; // сервер 13 - заблюренная "тизер"-карточка, раскрывается по клику    
@@ -2968,55 +2964,7 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
 })();
 </script>
 
-<style>
-/* ══ Автообновление: всплывашки ══ */
-#tsUpd { position:fixed; right:18px; bottom:18px; z-index:2147483000; display:flex; flex-direction:column; gap:10px; width:min(340px, calc(100vw - 36px)); pointer-events:none; }
-.tsu { pointer-events:auto; background:rgba(22,22,26,.97); border:1px solid rgba(255,255,255,.10); border-left:3px solid #8e8e93; border-radius:14px; padding:12px 14px; color:#f4f4f5; font-size:13px; line-height:1.4; box-shadow:0 10px 30px rgba(0,0,0,.45); animation:tsuIn .28s ease; transition:opacity .35s, transform .35s; }
-.tsu.ui, .tsu.plugin { border-left-color:#30d158; }
-.tsu.launcher { border-left-color:#0a84ff; }
-.tsu.error { border-left-color:#ff453a; }
-.tsu b { display:block; font-size:13px; margin-bottom:2px; }
-.tsu span { color:#c7c7cc; white-space:pre-line; }
-.tsu button { display:block; margin-top:10px; width:100%; padding:8px 10px; border:0; border-radius:10px; background:#0a84ff; color:#fff; font:inherit; font-weight:600; cursor:pointer; }
-.tsu button:disabled { opacity:.6; cursor:default; }
-.tsu.out { opacity:0; transform:translateX(16px); }
-@keyframes tsuIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-</style>
-<script>
-/* ══ Автообновление: уведомления от лаунчера (интерфейс / плагины / новая версия exe) ══ */
-(function(){
-    if (!(window.chrome && window.chrome.webview)) return;
-    var box = document.createElement('div'); box.id = 'tsUpd'; document.body.appendChild(box);
-    function post(o){ try { window.chrome.webview.postMessage(JSON.stringify(o)); } catch(e){} }
-    function toast(d){
-        var el = document.createElement('div'); el.className = 'tsu ' + (d.kind || '');
-        var b = document.createElement('b'); b.textContent = d.title || '';
-        var s = document.createElement('span'); s.textContent = d.text || '';
-        el.appendChild(b); el.appendChild(s);
-        if (d.ready) {
-            var btn = document.createElement('button'); btn.textContent = '\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u0438 \u043F\u0435\u0440\u0435\u0437\u0430\u043F\u0443\u0441\u0442\u0438\u0442\u044C';
-            btn.onclick = function(){ btn.disabled = true; btn.textContent = '\u041E\u0431\u043D\u043E\u0432\u043B\u044F\u044E...'; post({ action:'applyLauncherUpdate' }); };
-            el.appendChild(btn);
-        } else {
-            setTimeout(function(){ el.classList.add('out'); setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 400); }, d.kind === 'error' ? 9000 : 6000);
-        }
-        box.appendChild(el);
-        while (box.children.length > 4) box.removeChild(box.firstChild);
-    }
-    window.chrome.webview.addEventListener('message', function(ev){
-        var d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
-        if (d && d.action === 'updateEvent') toast(d);
-    });
-    /* ссылка "проверить обновления" рядом с номером версии (настройки, внизу) */
-    var v = document.getElementById('launcherVersion');
-    if (v && v.parentNode) {
-        var a = document.createElement('a'); a.href = '#'; a.textContent = ' \u00B7 \u043F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C \u043E\u0431\u043D\u043E\u0432\u043B\u0435\u043D\u0438\u044F';
-        a.style.cssText = 'color:inherit;text-decoration:underline;cursor:pointer;opacity:.85';
-        a.onclick = function(e){ e.preventDefault(); post({ action:'checkUpdates' }); };
-        v.parentNode.appendChild(a);
-    }
-})();
-</script>
+
 
     <script>
     /* ══ Заставка: слова появляются по буквам, затем расходятся в стороны и открывают лаунчер ══ */
@@ -3051,6 +2999,12 @@ body.theme-macos.mj .titlebar-buttons button.bld-btn:active, body.bld-open .titl
 .bld-btn .bld-ico { width:13px; height:13px; flex:0 0 auto; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linejoin:round; opacity:.85; }
 .bld-btn span { display:block; font:inherit; letter-spacing:inherit; color:inherit; text-transform:none; background:none; transform:none; }
 .bld-btn::before { display:none; }
+/* Кнопки шапки: настройки, свернуть, закрыть - в одном стиле с кнопкой «Сборки» */
+body.theme-macos.mj .titlebar-buttons > button, body.theme-macos.mj .titlebar-buttons > .gear-btn { position:relative; width:auto; min-width:30px; height:28px; margin:0; padding:0 10px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:0; border-radius:8px; cursor:pointer; color:rgba(235,235,245,.6); font:500 13px/1 'Inter','SF Pro Text',-apple-system,'Segoe UI',sans-serif; letter-spacing:0; transform:none; -webkit-app-region:no-drag; background:linear-gradient(180deg,#1c1c20,#030304); box-shadow:inset 0 1px 0 rgba(255,255,255,.14), 0 0 0 .5px rgba(255,255,255,.10), 0 3px 6px rgba(0,0,0,.9); transition:color .15s, filter .15s, box-shadow .15s; }
+body.theme-macos.mj .titlebar-buttons > button:hover, body.theme-macos.mj .titlebar-buttons > .gear-btn:hover { color:#fff; filter:brightness(1.25); background:linear-gradient(180deg,#1c1c20,#030304); transform:none; }
+body.theme-macos.mj .titlebar-buttons > button:active, body.theme-macos.mj .titlebar-buttons > .gear-btn:active, body.theme-macos.mj .titlebar-buttons > .gear-btn.active, body.bld-open .titlebar-buttons > .bld-btn { color:#fff; transform:none; box-shadow:inset 0 2px 4px rgba(0,0,0,.9), 0 0 0 .5px rgba(255,255,255,.10); }
+body.theme-macos.mj .titlebar-buttons > button.close:hover { color:#fff; filter:none; background:linear-gradient(180deg,#5a2228,#1a0708); }
+body.theme-macos.mj .titlebar-buttons > button.bld-btn { font-weight:500; }
 .bld-cover { width:100%; aspect-ratio:1/1; border-radius:9px; overflow:hidden; background:#000; }
 .bld-cover img { width:100%; height:100%; display:block; object-fit:cover; }
 
@@ -3071,7 +3025,6 @@ body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-price { padding:6px; border-radius:9px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:11.5px; font-weight:700; color:#8e8e98; }
 .bld-buy { width:100%; min-height:31px; border:0; border-radius:9px; background:#f15b7a; color:#fff; font:600 11.5px 'Inter',sans-serif; cursor:pointer; }
 .bld-buy:disabled { background:#34343c; color:#9999a3; cursor:default; }
-body.pay-open #payBar { display:flex !important; }
 </style>
 <div id="bldBack"></div>
 <div id="bldPop" role="dialog" aria-label="Сборки">
@@ -3106,9 +3059,7 @@ body.pay-open #payBar { display:flex !important; }
     window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds);if(d&&d.action==='buildImage'){list.querySelectorAll('img[data-bid]').forEach(function(im){if(im.getAttribute('data-bid')===d.id)im.src=d.src;});}});
     window.openBoosty=function(url){body.classList.add('pay-open');post({action:'openBoosty',url:url})};
     function closePay(){body.classList.remove('pay-open');post({action:'closeBoosty'})}
-    document.getElementById('payBack').onclick=function(){post({action:'boostyBack'})};
-    document.getElementById('payClose').onclick=closePay;
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&body.classList.contains('pay-open'))closePay()});
+            document.addEventListener('keydown',function(e){if(e.key==='Escape'&&body.classList.contains('pay-open'))closePay()});
 })();
 </script>
 <style>
