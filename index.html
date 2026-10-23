@@ -1645,23 +1645,14 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
                     <!-- ═══ TAB: PLUGINS ═══ -->
                     <div class="settings-page" id="page-plugins">
-                        <div class="setting-section" id="asiSection" style="--sect-accent:rgba(255,200,0,0.35)">
+                        <div class="setting-section" style="--sect-accent:rgba(48,209,88,0.4)">
                             <div class="setting-section-header">
-                                <span class="dot" style="background:#ffd000;box-shadow:0 0 5px #ffd000"></span>
-                                ПАПКА ASI · プラグイン
+                                <span class="dot" style="background:#30d158;box-shadow:0 0 5px #30d158"></span>
+                                ВСТРОЕННЫЕ ПЛАГИНЫ · プラグイン
                             </div>
-                            <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:10px">
-                                <div class="asi-path" id="asiPath">Выберите папку с игрой, чтобы увидеть плагины</div>
-                                <div class="asi-status" id="asiStatus"></div>
-                                <div class="asi-actions">
-                                    <button class="asi-btn" id="asiPickBtn" type="button">Выбрать папку asi</button>
-                                    <button class="asi-btn asi-btn-ghost" id="asiCreateBtn" type="button" hidden>Создать папку asi</button>
-                                    <button class="asi-btn asi-btn-ghost" id="asiResetBtn" type="button" hidden>Сбросить путь</button>
-                                </div>
-                            </div>
-                            <div id="asiList"></div>
+                            <div id="pluginsList"><div class="plg-empty">Загрузка…</div></div>
                         </div>
-                        <div class="plg-note">Плагины — это .asi и .dll из папки asi. Переключатель выключает файл (он переименовывается в .off). Изменения применяются при следующем инжекте.</div>
+                        <div class="plg-note">Плагины загружаются в игру вместе с инжектом (авто-инжект или кнопка). Изменения применяются при следующем инжекте. Наведи на плагин, чтобы увидеть описание.</div>
                     </div>
 
                 </div>
@@ -1687,7 +1678,7 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
             <div class="titlebar-by">by <span class="titlebar-author">Yamato</span></div>
         </div>
         <div class="titlebar-buttons">
-            <button class="bld-btn" id="bldBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Сборки"><span>Сборки</span></button>
+            <button class="bld-btn" id="bldBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Сборки"><svg class="bld-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span>Сборки</span></button>
             <button class="gear-btn" id="gearBtn" title="Настройки" aria-label="Настройки" type="button">⚙</button>
             <button id="minBtn" title="Свернуть" aria-label="Свернуть" type="button">─</button>
             <button id="closeBtn" class="close" title="Закрыть" aria-label="Закрыть" type="button">✕</button>
@@ -2885,86 +2876,77 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
 .plg-tip ul { margin:7px 0 0; padding-left:17px; }
 .plg-tip li { margin:2px 0; }
 </style>
-<style>
-.asi-path { font:500 12px/1.45 'Inter','Segoe UI',sans-serif; color:#c9ccd8; word-break:break-all; padding:10px 12px; border-radius:10px; background:#0a0a0c; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); user-select:text; }
-.asi-status { font-size:12px; color:#8e8e98; }
-.asi-status.warn { color:#ffd479; }
-.asi-actions { display:flex; gap:8px; flex-wrap:wrap; }
-.asi-btn { height:32px; padding:0 14px; border:0; border-radius:9px; background:#f4f4f5; color:#09090b; font:600 12px 'Inter',sans-serif; cursor:pointer; }
-.asi-btn:hover { background:#fff; }
-.asi-btn-ghost { background:rgba(255,255,255,.06); color:#e4e4e7; box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
-.asi-btn-ghost:hover { background:rgba(255,255,255,.1); }
-.asi-btn[hidden] { display:none; }
-</style>
 <script>
-/* ══ Настройки · Плагины: файлы из папки asi игры ══ */
+/* ══ Настройки · Плагины ══ */
 (function(){
-    var sec = document.getElementById('asiSection');
-    if (!sec || !(window.chrome && window.chrome.webview)) return;
-    var $ = function(id){ return document.getElementById(id); };
-    var saved = ''; try { saved = localStorage.getItem('tokyoAsiDir') || ''; } catch(e) {}
+    var list = document.getElementById('pluginsList');
+    if (!list || !(window.chrome && window.chrome.webview)) return;
+    var data = [];
+    var tip = document.createElement('div'); tip.className = 'plg-tip'; document.body.appendChild(tip);
     function post(o){ try { window.chrome.webview.postMessage(JSON.stringify(o)); } catch(e){} }
     function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function kb(n){ return n < 1024 ? n + ' Б' : n < 1048576 ? Math.round(n / 1024) + ' КБ' : (n / 1048576).toFixed(1) + ' МБ'; }
-    function hue(s){ var x = 0; s = String(s); for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 360; return x; }
-    function folder(){ return (typeof selectedFolder === 'string') ? selectedFolder : ''; }
-
-    function render(d){
-        $('asiPath').textContent = d.dir;
-        $('asiCreateBtn').hidden = !!d.exists;
-        $('asiResetBtn').hidden = !d.custom;
-        var st = $('asiStatus');
-        if (!d.exists) { st.className = 'asi-status warn'; st.textContent = 'Папка asi не найдена. Создайте её или выберите существующую.'; }
-        else { st.className = 'asi-status'; st.textContent = d.plugins.length ? 'Найдено плагинов: ' + d.plugins.length : 'Папка пуста. Положите сюда .asi или .dll'; }
-        var on = d.plugins.filter(function(p){ return p.enabled; }).length;
-        var cnt = $('srPl'); if (cnt) cnt.textContent = d.plugins.length ? on + '/' + d.plugins.length : '';
-        $('asiList').innerHTML = d.plugins.map(function(p){
-            return '<div class="setting-row plg-row">' +
-                '<div class="plg-main"><div class="plg-ic" style="--h:' + hue(p.id) + '">🧩</div>' +
-                '<div class="setting-info"><div class="setting-name plg-top"><span class="plg-name">' + esc(p.name) + '</span><span class="plg-ver">' + esc(p.kind) + '</span></div>' +
-                '<div class="setting-desc">' + kb(p.size) + '</div></div></div>' +
-                '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span class="fx-badge ' + (p.enabled ? 'on' : 'off') + '">' + (p.enabled ? 'ВКЛ' : 'ВЫКЛ') + '</span>' +
-                '<label class="stg-toggle"><input type="checkbox" data-id="' + esc(p.id) + '"' + (p.enabled ? ' checked' : '') + '><div class="stg-track"></div></label></div></div>';
-        }).join('');
-    }
-    function refresh(){
-        var f = folder();
-        if (!f && !saved) {
-            $('asiPath').textContent = 'Сначала выберите папку с игрой';
-            $('asiStatus').textContent = ''; $('asiStatus').className = 'asi-status';
-            $('asiList').innerHTML = ''; $('asiCreateBtn').hidden = true; $('asiResetBtn').hidden = true;
-            var c0 = $('srPl'); if (c0) c0.textContent = '';
-            return;
+    function tipHtml(p){
+        var parts = String(p.desc || '').split('\u2022').filter(function(x){ return x.indexOf('plugin_overlay.ini') < 0; });
+        var h = '<b>' + esc(p.name) + '</b>' + esc(parts[0].trim());
+        if (parts.length > 1) {
+            h += '<ul>';
+            for (var i = 1; i < parts.length; i++) h += '<li>' + esc(parts[i].trim()) + '</li>';
+            h += '</ul>';
         }
-        post({ action:'getAsi', folder:f });
+        if (!p.available) h += '<div style="margin-top:8px;color:#ff8a80">Плагин не вшит в этот exe.</div>';
+        return h;
     }
-
-    $('asiList').addEventListener('change', function(e){
+    function counter(){
+        var el = document.getElementById('srPl'); if (!el) return;
+        var n = 0; data.forEach(function(p){ if (p.enabled && p.available) n++; });
+        el.textContent = data.length ? n + '/' + data.length : '';
+    }
+    function render(){
+        if (!data.length) { list.innerHTML = '<div class="plg-empty">Плагинов нет</div>'; counter(); return; }
+        list.innerHTML = data.map(function(p, i){
+            var on = p.enabled && p.available;
+            return '<div class="setting-row plg-row' + (p.available ? '' : ' na') + '" data-i="' + i + '">' +
+                '<div class="setting-info"><div class="setting-name"><span class="ios-ico" style="--c:#30d158">\uD83E\uDDE9</span><span class="plg-name">' + esc(p.name) + '</span><span class="plg-ver">v' + esc(p.version) + '</span></div>' +
+                '<div class="setting-desc">' + esc(String(p['short'] || '').indexOf('plugin_overlay.ini') < 0 ? (p['short'] || '') : '') + '</div></div>' +
+                '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span class="fx-badge ' + (on ? 'on' : 'off') + '">' + (p.available ? (on ? '\u0412\u041A\u041B' : '\u0412\u042B\u041A\u041B') : '\u041D\u0415 \u0412\u0428\u0418\u0422') + '</span>' +
+                '<label class="stg-toggle"><input type="checkbox" data-id="' + esc(p.id) + '"' + (on ? ' checked' : '') + (p.available ? '' : ' disabled') + '><div class="stg-track"></div></label></div></div>';
+        }).join('');
+        counter();
+    }
+    list.addEventListener('change', function(e){
         var t = e.target; if (!t || t.type !== 'checkbox') return;
-        post({ action:'setAsiPlugin', folder:folder(), id:t.getAttribute('data-id'), enable:t.checked ? 'true' : 'false' });
+        var id = t.getAttribute('data-id');
+        data.forEach(function(p){ if (p.id === id) p.enabled = t.checked; });
+        var b = t.closest('.plg-row').querySelector('.fx-badge');
+        b.textContent = t.checked ? '\u0412\u041A\u041B' : '\u0412\u042B\u041A\u041B'; b.className = 'fx-badge ' + (t.checked ? 'on' : 'off');
+        counter();
+        post({ action:'setPlugin', id:id, enable:t.checked ? 'true' : 'false' });
     });
-    $('asiPickBtn').onclick = function(){ post({ action:'pickAsiFolder' }); };
-    $('asiCreateBtn').onclick = function(){ post({ action:'createAsiFolder', folder:folder() }); };
-    $('asiResetBtn').onclick = function(){
-        saved = ''; try { localStorage.removeItem('tokyoAsiDir'); } catch(e) {}
-        post({ action:'setAsiDir', path:'' }); refresh();
-    };
-    var gear = document.getElementById('gearBtn');
-    if (gear) gear.addEventListener('click', function(){ setTimeout(refresh, 0); });
+    /* подсказка с описанием: при наведении на плагин (строку) или его название */
+    function place(x, y){
+        var w = tip.offsetWidth, h = tip.offsetHeight, nx = x + 16, ny = y + 18;
+        if (nx + w > window.innerWidth - 8) nx = x - w - 16;
+        if (ny + h > window.innerHeight - 8) ny = y - h - 12;
+        tip.style.left = Math.max(8, nx) + 'px'; tip.style.top = Math.max(8, ny) + 'px';
+    }
+    function hide(){ tip.classList.remove('show'); }
+    list.addEventListener('mouseover', function(e){
+        var r = e.target.closest('.plg-row'); if (!r) { hide(); return; }
+        var p = data[+r.dataset.i]; if (!p) return;
+        if (tip._i !== r.dataset.i) { tip.innerHTML = tipHtml(p); tip._i = r.dataset.i; }
+        tip.classList.add('show'); place(e.clientX, e.clientY);
+    });
+    list.addEventListener('mousemove', function(e){ if (tip.classList.contains('show')) place(e.clientX, e.clientY); });
+    list.addEventListener('mouseleave', hide);
+    var ov = document.getElementById('settingsOverlay'); if (ov) ov.addEventListener('click', hide);
 
     window.chrome.webview.addEventListener('message', function(ev){
         var d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
-        if (!d || !d.action) return;
-        if (d.action === 'asiState') render(d);
-        else if (d.action === 'asiFolderPicked') {
-            saved = d.path; try { localStorage.setItem('tokyoAsiDir', d.path); } catch(e) {}
-            refresh();
-        }
-        else if (d.action === 'folderSelected' || d.action === 'gameInstalled' || d.action === 'dataLoaded') setTimeout(refresh, 0);
+        if (d && d.action === 'pluginsState') { data = d.plugins || []; tip._i = null; render(); }
     });
-
-    if (saved) post({ action:'setAsiDir', path:saved });
-    refresh();
+    var gear = document.getElementById('gearBtn');
+    if (gear) gear.addEventListener('click', function(){ post({ action:'getPlugins' }); });
+    post({ action:'getPlugins' });
 })();
 </script>
 
@@ -3045,32 +3027,31 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
 
 <style>
 /* ══ Кнопка «Сборки» в шапке + всплывающая карточка ══ */
-body.theme-macos.mj .titlebar-buttons button.bld-btn { position:relative; width:auto; height:26px; margin:0 10px 0 0; padding:0 20px; border-radius:7px; background:transparent; box-shadow:none; filter:none; cursor:pointer; -webkit-app-region:no-drag; transition:background-color .25s, transform .25s cubic-bezier(.32,.72,0,1); }
-body.theme-macos.mj .titlebar-buttons button.bld-btn:hover, body.bld-open .titlebar-buttons button.bld-btn { background:rgba(255,255,255,.05); transform:none; filter:none; }
-body.theme-macos.mj .titlebar-buttons button.bld-btn:active { transform:scale(.98); }
-/* сам шрифт широкий: жирный Unbounded, буквы растянуты по горизонтали, расстояние между ними обычное */
-.bld-btn span { display:block; transform:scaleX(1.32); transform-origin:center; font-family:'Unbounded','Inter','Segoe UI',sans-serif; font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; line-height:1; color:transparent; background:linear-gradient(180deg,#ffffff 20%,#c9cde0 100%); -webkit-background-clip:text; background-clip:text; }
-/* только тонкая рамка: белая с радужным отливом, внутри пусто */
-.bld-btn::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1px; pointer-events:none;
-    background:linear-gradient(100deg,#ffffff 0%,#ffd0ee 16%,#c8e2ff 34%,#d2ffe4 52%,#ffffff 68%,#ffe6c2 84%,#ffffff 100%); background-size:300% 100%; animation:bldRb 7s linear infinite;
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
-@keyframes bldRb { to { background-position:-300% 0; } }
+body.theme-macos.mj .titlebar-buttons button.bld-btn { position:relative; width:auto; height:28px; margin:0 8px 0 0; padding:0 11px; display:inline-flex; align-items:center; gap:6px; border:0; border-radius:8px; cursor:pointer; color:rgba(235,235,245,.6); font:500 12px/1 'Inter','SF Pro Text',-apple-system,'Segoe UI',sans-serif; letter-spacing:0; -webkit-app-region:no-drag; background:linear-gradient(180deg,#1c1c20,#030304); box-shadow:inset 0 1px 0 rgba(255,255,255,.14), 0 0 0 .5px rgba(255,255,255,.10), 0 3px 6px rgba(0,0,0,.9); transition:color .15s, filter .15s, transform .15s; }
+body.theme-macos.mj .titlebar-buttons button.bld-btn:hover { color:#fff; filter:brightness(1.25); }
+body.theme-macos.mj .titlebar-buttons button.bld-btn:active, body.bld-open .titlebar-buttons button.bld-btn { color:#fff; transform:translateY(1px); box-shadow:inset 0 2px 4px rgba(0,0,0,.9), 0 0 0 .5px rgba(255,255,255,.10); }
+.bld-btn .bld-ico { width:13px; height:13px; flex:0 0 auto; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linejoin:round; opacity:.85; }
+.bld-btn span { display:block; font:inherit; letter-spacing:inherit; color:inherit; text-transform:none; background:none; transform:none; }
+.bld-btn::before { display:none; }
+.bld-cover { width:100%; aspect-ratio:1/1; border-radius:9px; overflow:hidden; background:#000; }
+.bld-cover img { width:100%; height:100%; display:block; object-fit:cover; }
 
 #bldBack { position:fixed; left:0; right:0; bottom:0; top:40px; z-index:90; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:opacity .25s; }
-#bldPop { position:fixed; top:46px; right:14px; z-index:91; width:288px; max-height:calc(100vh - 62px); display:flex; flex-direction:column; border-radius:20px; background:rgba(14,14,18,.98); box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 30px 70px -12px rgba(0,0,0,.9); color:#e8e8f0;
+#bldPop { position:fixed; top:46px; right:14px; z-index:91; width:440px; max-height:calc(100vh - 62px); display:flex; flex-direction:column; border-radius:20px; background:rgba(14,14,18,.98); box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 30px 70px -12px rgba(0,0,0,.9); color:#e8e8f0;
     opacity:0; pointer-events:none; transform:translateY(-8px) scale(.96); transform-origin:100% 0; transition:opacity .22s ease, transform .35s cubic-bezier(.32,.72,0,1); }
 body.bld-open #bldBack { opacity:1; pointer-events:auto; }
 body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-sub { padding:16px 18px 4px; font-size:12px; color:#8e8e98; }
-.bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 14px 14px; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
-.bld-card { display:flex; flex-direction:column; gap:9px; padding:10px; border-radius:16px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
-.bld-cover { width:100%; aspect-ratio:1/1; border-radius:11px; overflow:hidden; background:#000; }
+.bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 12px 12px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; gap:10px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
+.bld-card { display:flex; flex-direction:column; gap:7px; padding:7px; border-radius:13px; min-width:0; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
+.bld-cover { width:100%; aspect-ratio:1/1; border-radius:9px; overflow:hidden; background:#000; }
 .bld-cover svg { width:100%; height:100%; display:block; }
 .bld-rate { align-self:flex-end; display:flex; align-items:center; gap:6px; padding:7px 13px; border-radius:10px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:600; color:#ffc928; }
 .bld-rate svg { width:16px; height:16px; fill:#ffc928; }
-.bld-name { margin:0 3px; font-size:17px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
-.bld-price { padding:12px; border-radius:11px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:700; color:#8e8e98; }
-.bld-buy { width:100%; min-height:38px; border:0; border-radius:11px; background:#f15b7a; color:#fff; font:600 13px 'Inter',sans-serif; cursor:pointer; }
+.bld-name { margin:0 2px; font-size:12.5px; font-weight:700; line-height:1.25; letter-spacing:-.1px; color:#f4f4f5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:31px; }
+.bld-body > .bld-empty { grid-column:1 / -1; }
+.bld-price { padding:6px; border-radius:9px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:11.5px; font-weight:700; color:#8e8e98; }
+.bld-buy { width:100%; min-height:31px; border:0; border-radius:9px; background:#f15b7a; color:#fff; font:600 11.5px 'Inter',sans-serif; cursor:pointer; }
 .bld-buy:disabled { background:#34343c; color:#9999a3; cursor:default; }
 body.pay-open #payBar { display:flex !important; }
 </style>
@@ -3092,7 +3073,7 @@ body.pay-open #payBar { display:flex !important; }
         empty.style.display='none';
         builds.forEach(function(build){
             var card=document.createElement('article');card.className='bld-card';
-            var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
+            if(build.imageUrl){var imageUrl='';try{var image=new URL(build.imageUrl);if(image.protocol==='https:')imageUrl=image.href}catch(e){}if(imageUrl){var cover=document.createElement('div');cover.className='bld-cover';var img=document.createElement('img');img.alt=build.name||'Обложка сборки';img.draggable=false;img.setAttribute('data-bid',String(build.id||build.name||imageUrl));img.style.visibility='hidden';img.onload=function(){img.style.visibility=''};img.onerror=function(){img.style.visibility='hidden'};img.src=imageUrl;cover.appendChild(img);card.appendChild(cover)}}var name=document.createElement('h3');name.className='bld-name';name.textContent=build.name||'Сборка';card.appendChild(name);
             var price=document.createElement('p');price.className='bld-price';price.textContent=build.version?'Версия '+build.version:'Платная сборка';card.appendChild(price);
             var buy=document.createElement('button');buy.type='button';buy.className='bld-buy';var url='';
             try{var u=new URL(build.boostyUrl||'');if(u.protocol==='https:'&&(u.hostname==='boosty.to'||u.hostname.endsWith('.boosty.to')))url=u.href}catch(e){}
@@ -3104,7 +3085,7 @@ body.pay-open #payBar { display:flex !important; }
     btn.addEventListener('click',function(e){e.stopPropagation();var show=!body.classList.contains('bld-open');open(show);if(show)post({action:'getAvailableBuilds'})});
     document.getElementById('bldBack').addEventListener('click',function(){open(false)});
     document.addEventListener('keydown',function(e){if(e.key==='Escape')open(false)});
-    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds)});
+    window.chrome.webview.addEventListener('message',function(ev){var d=typeof ev.data==='string'?JSON.parse(ev.data):ev.data;if(d&&d.action==='availableBuilds')render(d.builds);if(d&&d.action==='buildImage'){list.querySelectorAll('img[data-bid]').forEach(function(im){if(im.getAttribute('data-bid')===d.id)im.src=d.src;});}});
     window.openBoosty=function(url){body.classList.add('pay-open');post({action:'openBoosty',url:url})};
     function closePay(){body.classList.remove('pay-open');post({action:'closeBoosty'})}
     document.getElementById('payBack').onclick=function(){post({action:'boostyBack'})};
