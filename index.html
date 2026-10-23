@@ -3007,24 +3007,25 @@ body.theme-macos.mj .titlebar-buttons button.bld-btn:active { transform:scale(.9
 @keyframes bldRb { to { background-position:-300% 0; } }
 
 #bldBack { position:fixed; left:0; right:0; bottom:0; top:40px; z-index:90; background:rgba(0,0,0,.35); opacity:0; pointer-events:none; transition:opacity .25s; }
-#bldPop { position:fixed; top:46px; right:14px; z-index:91; width:288px; max-height:calc(100vh - 62px); display:flex; flex-direction:column; border-radius:20px; background:rgba(14,14,18,.98); box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 30px 70px -12px rgba(0,0,0,.9); color:#e8e8f0;
+#bldPop { position:fixed; top:46px; right:14px; z-index:91; width:440px; max-height:calc(100vh - 62px); display:flex; flex-direction:column; border-radius:20px; background:rgba(14,14,18,.98); box-shadow:0 0 0 1px rgba(255,255,255,.1), 0 30px 70px -12px rgba(0,0,0,.9); color:#e8e8f0;
     opacity:0; pointer-events:none; transform:translateY(-8px) scale(.96); transform-origin:100% 0; transition:opacity .22s ease, transform .35s cubic-bezier(.32,.72,0,1); }
 body.bld-open #bldBack { opacity:1; pointer-events:auto; }
 body.bld-open #bldPop { opacity:1; pointer-events:auto; transform:none; }
 .bld-sub { padding:16px 18px 4px; font-size:12px; color:#8e8e98; }
-.bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 14px 14px; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
-.bld-card { display:flex; flex-direction:column; gap:9px; padding:10px; border-radius:16px; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
-.bld-cover { width:100%; aspect-ratio:1/1; border-radius:11px; overflow:hidden; background:#000; }
+.bld-body { min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:10px 12px 12px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-content:start; gap:10px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
+.bld-card { display:flex; flex-direction:column; gap:7px; padding:7px; border-radius:13px; min-width:0; background:#0f0f12; box-shadow:0 0 0 1px rgba(255,255,255,.08); }
+.bld-cover { width:100%; aspect-ratio:1/1; border-radius:9px; overflow:hidden; background:#000; }
 .bld-cover svg, .bld-cover img { width:100%; height:100%; display:block; }
 .bld-cover img { object-fit:cover; object-position:50% 50%; transform:scale(1.2); transform-origin:center; cursor:grab; user-select:none; -webkit-user-drag:none; touch-action:none; }
 .bld-cover img.is-panning { cursor:grabbing; }
 .bld-rate { align-self:flex-end; display:flex; align-items:center; gap:6px; padding:7px 13px; border-radius:10px; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:600; color:#ffc928; }
 .bld-rate svg { width:16px; height:16px; fill:#ffc928; }
-.bld-name { margin:0 3px; font-size:17px; font-weight:700; letter-spacing:-.2px; color:#f4f4f5; }
-.bld-price { padding:12px; border-radius:11px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:13px; font-weight:700; color:#8e8e98; }
-.bld-buy { width:100%; min-height:38px; border:0; border-radius:11px; background:#f15b7a; color:#fff; font:600 13px 'Inter',sans-serif; cursor:pointer; }
+.bld-name { margin:0 2px; font-size:12.5px; font-weight:700; line-height:1.25; letter-spacing:-.1px; color:#f4f4f5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:31px; }
+.bld-price { padding:6px; border-radius:9px; text-align:center; background:#151519; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); font-size:11.5px; font-weight:700; color:#8e8e98; }
+.bld-buy { width:100%; min-height:31px; border:0; border-radius:9px; background:#f15b7a; color:#fff; font:600 11.5px 'Inter',sans-serif; cursor:pointer; }
 .bld-buy:disabled { background:#34343c; color:#9999a3; cursor:default; }
 body.pay-open #payBar { display:none !important; }
+.bld-body > .bld-empty { grid-column:1 / -1; }
 </style>
 <div id="bldBack"></div>
 <div id="bldPop" role="dialog" aria-label="Сборки">
