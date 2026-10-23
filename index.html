@@ -1645,14 +1645,23 @@ body.intro-reveal .wrapper > .launch-row { animation:introUp .9s cubic-bezier(.1
 
                     <!-- ═══ TAB: PLUGINS ═══ -->
                     <div class="settings-page" id="page-plugins">
-                        <div class="setting-section" style="--sect-accent:rgba(48,209,88,0.4)">
+                        <div class="setting-section" id="asiSection" style="--sect-accent:rgba(255,200,0,0.35)">
                             <div class="setting-section-header">
-                                <span class="dot" style="background:#30d158;box-shadow:0 0 5px #30d158"></span>
-                                ВСТРОЕННЫЕ ПЛАГИНЫ · プラグイン
+                                <span class="dot" style="background:#ffd000;box-shadow:0 0 5px #ffd000"></span>
+                                ПАПКА ASI · プラグイン
                             </div>
-                            <div id="pluginsList"><div class="plg-empty">Загрузка…</div></div>
+                            <div class="setting-row" style="flex-direction:column;align-items:stretch;gap:10px">
+                                <div class="asi-path" id="asiPath">Выберите папку с игрой, чтобы увидеть плагины</div>
+                                <div class="asi-status" id="asiStatus"></div>
+                                <div class="asi-actions">
+                                    <button class="asi-btn" id="asiPickBtn" type="button">Выбрать папку asi</button>
+                                    <button class="asi-btn asi-btn-ghost" id="asiCreateBtn" type="button" hidden>Создать папку asi</button>
+                                    <button class="asi-btn asi-btn-ghost" id="asiResetBtn" type="button" hidden>Сбросить путь</button>
+                                </div>
+                            </div>
+                            <div id="asiList"></div>
                         </div>
-                        <div class="plg-note">Плагины загружаются в игру вместе с инжектом (авто-инжект или кнопка). Изменения применяются при следующем инжекте. Наведи на плагин, чтобы увидеть описание.</div>
+                        <div class="plg-note">Плагины — это .asi и .dll из папки asi. Переключатель выключает файл (он переименовывается в .off). Изменения применяются при следующем инжекте.</div>
                     </div>
 
                 </div>
@@ -2876,77 +2885,86 @@ body.theme-macos.mj .settings-modal[data-pg="plugins"] { --acc:#30d158; --acc2:#
 .plg-tip ul { margin:7px 0 0; padding-left:17px; }
 .plg-tip li { margin:2px 0; }
 </style>
+<style>
+.asi-path { font:500 12px/1.45 'Inter','Segoe UI',sans-serif; color:#c9ccd8; word-break:break-all; padding:10px 12px; border-radius:10px; background:#0a0a0c; box-shadow:inset 0 0 0 1px rgba(255,255,255,.07); user-select:text; }
+.asi-status { font-size:12px; color:#8e8e98; }
+.asi-status.warn { color:#ffd479; }
+.asi-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.asi-btn { height:32px; padding:0 14px; border:0; border-radius:9px; background:#f4f4f5; color:#09090b; font:600 12px 'Inter',sans-serif; cursor:pointer; }
+.asi-btn:hover { background:#fff; }
+.asi-btn-ghost { background:rgba(255,255,255,.06); color:#e4e4e7; box-shadow:inset 0 0 0 1px rgba(255,255,255,.1); }
+.asi-btn-ghost:hover { background:rgba(255,255,255,.1); }
+.asi-btn[hidden] { display:none; }
+</style>
 <script>
-/* ══ Настройки · Плагины ══ */
+/* ══ Настройки · Плагины: файлы из папки asi игры ══ */
 (function(){
-    var list = document.getElementById('pluginsList');
-    if (!list || !(window.chrome && window.chrome.webview)) return;
-    var data = [];
-    var tip = document.createElement('div'); tip.className = 'plg-tip'; document.body.appendChild(tip);
+    var sec = document.getElementById('asiSection');
+    if (!sec || !(window.chrome && window.chrome.webview)) return;
+    var $ = function(id){ return document.getElementById(id); };
+    var saved = ''; try { saved = localStorage.getItem('tokyoAsiDir') || ''; } catch(e) {}
     function post(o){ try { window.chrome.webview.postMessage(JSON.stringify(o)); } catch(e){} }
     function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-    function tipHtml(p){
-        var parts = String(p.desc || '').split('\u2022').filter(function(x){ return x.indexOf('plugin_overlay.ini') < 0; });
-        var h = '<b>' + esc(p.name) + '</b>' + esc(parts[0].trim());
-        if (parts.length > 1) {
-            h += '<ul>';
-            for (var i = 1; i < parts.length; i++) h += '<li>' + esc(parts[i].trim()) + '</li>';
-            h += '</ul>';
-        }
-        if (!p.available) h += '<div style="margin-top:8px;color:#ff8a80">Плагин не вшит в этот exe.</div>';
-        return h;
-    }
-    function counter(){
-        var el = document.getElementById('srPl'); if (!el) return;
-        var n = 0; data.forEach(function(p){ if (p.enabled && p.available) n++; });
-        el.textContent = data.length ? n + '/' + data.length : '';
-    }
-    function render(){
-        if (!data.length) { list.innerHTML = '<div class="plg-empty">Плагинов нет</div>'; counter(); return; }
-        list.innerHTML = data.map(function(p, i){
-            var on = p.enabled && p.available;
-            return '<div class="setting-row plg-row' + (p.available ? '' : ' na') + '" data-i="' + i + '">' +
-                '<div class="setting-info"><div class="setting-name"><span class="ios-ico" style="--c:#30d158">\uD83E\uDDE9</span><span class="plg-name">' + esc(p.name) + '</span><span class="plg-ver">v' + esc(p.version) + '</span></div>' +
-                '<div class="setting-desc">' + esc(String(p['short'] || '').indexOf('plugin_overlay.ini') < 0 ? (p['short'] || '') : '') + '</div></div>' +
-                '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span class="fx-badge ' + (on ? 'on' : 'off') + '">' + (p.available ? (on ? '\u0412\u041A\u041B' : '\u0412\u042B\u041A\u041B') : '\u041D\u0415 \u0412\u0428\u0418\u0422') + '</span>' +
-                '<label class="stg-toggle"><input type="checkbox" data-id="' + esc(p.id) + '"' + (on ? ' checked' : '') + (p.available ? '' : ' disabled') + '><div class="stg-track"></div></label></div></div>';
+    function kb(n){ return n < 1024 ? n + ' Б' : n < 1048576 ? Math.round(n / 1024) + ' КБ' : (n / 1048576).toFixed(1) + ' МБ'; }
+    function hue(s){ var x = 0; s = String(s); for (var i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 360; return x; }
+    function folder(){ return (typeof selectedFolder === 'string') ? selectedFolder : ''; }
+
+    function render(d){
+        $('asiPath').textContent = d.dir;
+        $('asiCreateBtn').hidden = !!d.exists;
+        $('asiResetBtn').hidden = !d.custom;
+        var st = $('asiStatus');
+        if (!d.exists) { st.className = 'asi-status warn'; st.textContent = 'Папка asi не найдена. Создайте её или выберите существующую.'; }
+        else { st.className = 'asi-status'; st.textContent = d.plugins.length ? 'Найдено плагинов: ' + d.plugins.length : 'Папка пуста. Положите сюда .asi или .dll'; }
+        var on = d.plugins.filter(function(p){ return p.enabled; }).length;
+        var cnt = $('srPl'); if (cnt) cnt.textContent = d.plugins.length ? on + '/' + d.plugins.length : '';
+        $('asiList').innerHTML = d.plugins.map(function(p){
+            return '<div class="setting-row plg-row">' +
+                '<div class="plg-main"><div class="plg-ic" style="--h:' + hue(p.id) + '">🧩</div>' +
+                '<div class="setting-info"><div class="setting-name plg-top"><span class="plg-name">' + esc(p.name) + '</span><span class="plg-ver">' + esc(p.kind) + '</span></div>' +
+                '<div class="setting-desc">' + kb(p.size) + '</div></div></div>' +
+                '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><span class="fx-badge ' + (p.enabled ? 'on' : 'off') + '">' + (p.enabled ? 'ВКЛ' : 'ВЫКЛ') + '</span>' +
+                '<label class="stg-toggle"><input type="checkbox" data-id="' + esc(p.id) + '"' + (p.enabled ? ' checked' : '') + '><div class="stg-track"></div></label></div></div>';
         }).join('');
-        counter();
     }
-    list.addEventListener('change', function(e){
+    function refresh(){
+        var f = folder();
+        if (!f && !saved) {
+            $('asiPath').textContent = 'Сначала выберите папку с игрой';
+            $('asiStatus').textContent = ''; $('asiStatus').className = 'asi-status';
+            $('asiList').innerHTML = ''; $('asiCreateBtn').hidden = true; $('asiResetBtn').hidden = true;
+            var c0 = $('srPl'); if (c0) c0.textContent = '';
+            return;
+        }
+        post({ action:'getAsi', folder:f });
+    }
+
+    $('asiList').addEventListener('change', function(e){
         var t = e.target; if (!t || t.type !== 'checkbox') return;
-        var id = t.getAttribute('data-id');
-        data.forEach(function(p){ if (p.id === id) p.enabled = t.checked; });
-        var b = t.closest('.plg-row').querySelector('.fx-badge');
-        b.textContent = t.checked ? '\u0412\u041A\u041B' : '\u0412\u042B\u041A\u041B'; b.className = 'fx-badge ' + (t.checked ? 'on' : 'off');
-        counter();
-        post({ action:'setPlugin', id:id, enable:t.checked ? 'true' : 'false' });
+        post({ action:'setAsiPlugin', folder:folder(), id:t.getAttribute('data-id'), enable:t.checked ? 'true' : 'false' });
     });
-    /* подсказка с описанием: при наведении на плагин (строку) или его название */
-    function place(x, y){
-        var w = tip.offsetWidth, h = tip.offsetHeight, nx = x + 16, ny = y + 18;
-        if (nx + w > window.innerWidth - 8) nx = x - w - 16;
-        if (ny + h > window.innerHeight - 8) ny = y - h - 12;
-        tip.style.left = Math.max(8, nx) + 'px'; tip.style.top = Math.max(8, ny) + 'px';
-    }
-    function hide(){ tip.classList.remove('show'); }
-    list.addEventListener('mouseover', function(e){
-        var r = e.target.closest('.plg-row'); if (!r) { hide(); return; }
-        var p = data[+r.dataset.i]; if (!p) return;
-        if (tip._i !== r.dataset.i) { tip.innerHTML = tipHtml(p); tip._i = r.dataset.i; }
-        tip.classList.add('show'); place(e.clientX, e.clientY);
-    });
-    list.addEventListener('mousemove', function(e){ if (tip.classList.contains('show')) place(e.clientX, e.clientY); });
-    list.addEventListener('mouseleave', hide);
-    var ov = document.getElementById('settingsOverlay'); if (ov) ov.addEventListener('click', hide);
+    $('asiPickBtn').onclick = function(){ post({ action:'pickAsiFolder' }); };
+    $('asiCreateBtn').onclick = function(){ post({ action:'createAsiFolder', folder:folder() }); };
+    $('asiResetBtn').onclick = function(){
+        saved = ''; try { localStorage.removeItem('tokyoAsiDir'); } catch(e) {}
+        post({ action:'setAsiDir', path:'' }); refresh();
+    };
+    var gear = document.getElementById('gearBtn');
+    if (gear) gear.addEventListener('click', function(){ setTimeout(refresh, 0); });
 
     window.chrome.webview.addEventListener('message', function(ev){
         var d = typeof ev.data === 'string' ? JSON.parse(ev.data) : ev.data;
-        if (d && d.action === 'pluginsState') { data = d.plugins || []; tip._i = null; render(); }
+        if (!d || !d.action) return;
+        if (d.action === 'asiState') render(d);
+        else if (d.action === 'asiFolderPicked') {
+            saved = d.path; try { localStorage.setItem('tokyoAsiDir', d.path); } catch(e) {}
+            refresh();
+        }
+        else if (d.action === 'folderSelected' || d.action === 'gameInstalled' || d.action === 'dataLoaded') setTimeout(refresh, 0);
     });
-    var gear = document.getElementById('gearBtn');
-    if (gear) gear.addEventListener('click', function(){ post({ action:'getPlugins' }); });
-    post({ action:'getPlugins' });
+
+    if (saved) post({ action:'setAsiDir', path:saved });
+    refresh();
 })();
 </script>
 
