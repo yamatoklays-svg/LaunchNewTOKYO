@@ -1,1 +1,20 @@
-
+[
+  {
+    "name": "нейм",
+    "version": "1",
+    "boostyUrl": "ссылка",
+    "imageUrl": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/Sborka%20ocen.jpg"
+  },
+  {
+    "name": "нейм",
+    "version": "1",
+    "boostyUrl": "ссылка",
+    "imageUrl": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/Sborka.png"
+  },
+  {
+    "name": "нейм",
+    "version": "1",
+    "boostyUrl": "ссылка",
+    "imageUrl": "https://raw.githubusercontent.com/yamatoklays-svg/LaunchNewTOKYO/main/Sborka2.jpg"
+  }
+]
